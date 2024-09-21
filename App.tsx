@@ -11,12 +11,22 @@ export default function App(): React.JSX.Element {
   return (
     <SafeAreaProvider>
       <NavigationContainer>
-        <HomeStack.Navigator
-          initialRouteName="Login"
-        >
-          <HomeStack.Screen name="Login" component={Login} options={{headerShown: false}} />
-          <HomeStack.Screen name="Register" component={Register} options={{headerTitle: ""}} />
-          <HomeStack.Screen name="Home" component={HomeScreen} />
+        <HomeStack.Navigator initialRouteName="Login">
+          <HomeStack.Screen
+            name="Login"
+            component={Login}
+            options={{ headerShown: false }}
+          />
+          <HomeStack.Screen
+            name="Register"
+            component={Register}
+            options={{ headerTitle: "" }}
+          />
+          <HomeStack.Screen
+            name="Home"
+            component={HomeScreen}
+            options={{ headerBackVisible: false }}
+          />
         </HomeStack.Navigator>
       </NavigationContainer>
     </SafeAreaProvider>
