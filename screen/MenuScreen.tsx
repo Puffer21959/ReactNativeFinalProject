@@ -29,7 +29,13 @@ const MenuScreen = ({ navigation }: any): React.JSX.Element => {
         <Line />
 
         <View style={styles.container2}>
-          <TouchableOpacity style={styles.button}>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() => {
+              navigation.navigate("Profile");
+              navigation.closeDrawer();
+            }}
+          >
             <Text style={styles.text}>บัญชี</Text>
           </TouchableOpacity>
 
@@ -41,8 +47,11 @@ const MenuScreen = ({ navigation }: any): React.JSX.Element => {
             <Text style={styles.text}>ออเดอร์</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Login')}>
-            <Text style={styles.text}>ออกจากระบบ</Text>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() => navigation.navigate("Login")}
+          >
+            <Text style={[styles.text,{color: 'red'}]}>ออกจากระบบ</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -70,7 +79,6 @@ const styles = StyleSheet.create({
     height: 50,
     borderRadius: 150 / 2,
     overflow: "hidden",
-    borderWidth: 3,
     backgroundColor: "gray",
   },
   container2: {
@@ -79,7 +87,7 @@ const styles = StyleSheet.create({
   },
   text: {
     fontWeight: "bold",
-    fontSize: 20
+    fontSize: 20,
   },
   button: {
     marginVertical: 10,

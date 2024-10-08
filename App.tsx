@@ -15,11 +15,14 @@ const Drawer = createDrawerNavigator();
 function HomeStackScreen() {
   return (
     <Drawer.Navigator
-      screenOptions={{drawerPosition: 'right'}}
+      initialRouteName="Feed"
+      screenOptions={{
+        drawerPosition: "right",
+        headerLeft: (props) => <></>,
+      }}
       drawerContent={(props) => <MenuScreen {...props} />}
     >
-      <Drawer.Screen name="Feed" component={HomeScreen} options={{headerLeft: props => <></>}} />
-      <Drawer.Screen name="Profile" component={ProfileScreen} />
+      <Drawer.Screen name="Feed" component={HomeScreen} />
     </Drawer.Navigator>
   );
 }
@@ -43,6 +46,11 @@ export default function App(): React.JSX.Element {
             name="Home"
             component={HomeStackScreen}
             options={{ headerBackVisible: false, headerShown: false }}
+          />
+          <HomeStack.Screen
+            name="Profile"
+            component={ProfileScreen}
+            options={{ title: "" }}
           />
         </HomeStack.Navigator>
       </NavigationContainer>
