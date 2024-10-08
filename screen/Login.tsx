@@ -130,7 +130,7 @@ const Login = (): React.JSX.Element => {
             {/*TODO: ระบบล็อคอิน */}
             <TouchableOpacity
               style={styleLogin.regisButton}
-              onPress={() => navigation.navigate("Home")}
+              onPress={() => {navigation.navigate("Home");setpage(1)}}
             >
               <Text style={{ color: "white", fontWeight: "bold" }}>
                 เข้าสู่ระบบ

@@ -4,8 +4,25 @@ import { SafeAreaProvider } from "react-native-safe-area-context";
 import Login from "./screen/Login";
 import Register from "./screen/Register";
 import HomeScreen from "./screen/HomeScreen";
+import { createDrawerNavigator } from "@react-navigation/drawer";
+import MenuScreen from "./screen/MenuScreen";
+import React from "react";
+import ProfileScreen from "./screen/ProfileScreen";
 
 const HomeStack = createNativeStackNavigator();
+const Drawer = createDrawerNavigator();
+
+function HomeStackScreen() {
+  return (
+    <Drawer.Navigator
+      screenOptions={{drawerPosition: 'right'}}
+      drawerContent={(props) => <MenuScreen {...props} />}
+    >
+      <Drawer.Screen name="Feed" component={HomeScreen} options={{headerLeft: props => <></>}} />
+      <Drawer.Screen name="Profile" component={ProfileScreen} />
+    </Drawer.Navigator>
+  );
+}
 
 export default function App(): React.JSX.Element {
   return (
@@ -24,8 +41,8 @@ export default function App(): React.JSX.Element {
           />
           <HomeStack.Screen
             name="Home"
-            component={HomeScreen}
-            options={{ headerBackVisible: false }}
+            component={HomeStackScreen}
+            options={{ headerBackVisible: false, headerShown: false }}
           />
         </HomeStack.Navigator>
       </NavigationContainer>

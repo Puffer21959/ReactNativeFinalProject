@@ -12,7 +12,7 @@ const MaterialHeaderButton = (props: any) => (
   <HeaderButton IconComponent={MaterialIcon} iconSize={23} {...props} />
 );
 
-const HomeScreen = (): React.JSX.Element => {
+const HomeScreen = ({ props }: any): React.JSX.Element => {
   const navigation = useNavigation<any>();
 
   useLayoutEffect(() => {
@@ -28,7 +28,7 @@ const HomeScreen = (): React.JSX.Element => {
           <Item
             title="profile"
             iconName="account"
-            onPress={() => console.log("gotoProfile")}
+            onPress={() => navigation.openDrawer()}
           />
         </HeaderButtons>
       ),
