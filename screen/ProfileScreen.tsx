@@ -1,16 +1,47 @@
-import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import React from "react";
+import {
+  Image,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import React, { useState } from "react";
+import * as ImagePicker from "expo-image-picker";
+import ImageLoad from 'react-native-image-placeholder';
 
 const ProfileScreen = () => {
+  const [image, setImage] = useState<string | null>(null);
+
+  const pickImage = async () => {
+    try {
+      let result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.All,
+        allowsEditing: true,
+        aspect: [4, 3],
+        quality: 1,
+      });
+
+      console.log(result);
+
+      if (!result.canceled) {
+        setImage(result.assets[0].uri);
+        //console.log(image);
+      }
+    } catch (error) {
+      console.log(error);
+    }    
+  };
   return (
     <>
       <View style={styles.container1}>
         <View style={styles.container2}>
           <View style={{ alignItems: "center" }}>
-            <Image
-              source={require("../assets/favicon.png")}
-              style={styles.image}
-            />
+            <TouchableOpacity onPress={pickImage}>
+              <Image
+                source={require("../assets/profile-template.png")}
+                style={styles.image}
+              />              
+            </TouchableOpacity>
           </View>
           <Text style={styles.text}>ชื่อ นามสกุล</Text>
           <Text style={styles.text}>Email@gmail.com</Text>
@@ -60,7 +91,7 @@ const styles = StyleSheet.create({
   passButton: {
     backgroundColor: "#3F62D6FF",
     borderRadius: 15,
-    alignSelf: 'center',
+    alignSelf: "center",
     padding: 5,
   },
 });
