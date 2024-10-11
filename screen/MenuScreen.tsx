@@ -39,7 +39,13 @@ const MenuScreen = ({ navigation }: any): React.JSX.Element => {
             <Text style={styles.text}>บัญชี</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.button}>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() => {
+              navigation.navigate("UserStore");
+              navigation.closeDrawer();
+            }}
+          >
             <Text style={styles.text}>ร้านค้า</Text>
           </TouchableOpacity>
 
@@ -51,7 +57,7 @@ const MenuScreen = ({ navigation }: any): React.JSX.Element => {
             style={styles.button}
             onPress={() => navigation.navigate("Login")}
           >
-            <Text style={[styles.text,{color: 'red'}]}>ออกจากระบบ</Text>
+            <Text style={[styles.text, { color: "red" }]}>ออกจากระบบ</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -68,12 +74,14 @@ const styles = StyleSheet.create({
     marginLeft: 10,
     //backgroundColor: "#299324FF",
   },
+
   profileName: {
     fontWeight: "bold",
     fontSize: 17,
     textAlignVertical: "center",
     marginLeft: 10,
   },
+
   image: {
     width: 50,
     height: 50,
@@ -81,15 +89,19 @@ const styles = StyleSheet.create({
     overflow: "hidden",
     backgroundColor: "gray",
   },
+
   container2: {
     flex: 1,
     marginLeft: 10,
   },
+
   text: {
     fontWeight: "bold",
     fontSize: 20,
   },
+
   button: {
     marginVertical: 10,
   },
+  
 });

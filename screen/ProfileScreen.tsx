@@ -1,16 +1,14 @@
-import {
-  Image,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import React, { useState } from "react";
 import * as ImagePicker from "expo-image-picker";
-import ImageLoad from 'react-native-image-placeholder';
 
-const ProfileScreen = () => {
-  const [image, setImage] = useState<string | null>(null);
+//TODO: >Make it look better
+//      >Connect to Database
+
+const ProfileScreen = (): React.JSX.Element => {
+  const [image, setImage] = useState<string>(
+    Image.resolveAssetSource(require("../assets/favicon.png")).uri
+  );
 
   const pickImage = async () => {
     try {
@@ -29,27 +27,29 @@ const ProfileScreen = () => {
       }
     } catch (error) {
       console.log(error);
-    }    
+    }
   };
+
   return (
     <>
       <View style={styles.container1}>
         <View style={styles.container2}>
           <View style={{ alignItems: "center" }}>
             <TouchableOpacity onPress={pickImage}>
-              <Image
-                source={require("../assets/profile-template.png")}
-                style={styles.image}
-              />              
+              <Image source={{ uri: image }} style={styles.image} />
             </TouchableOpacity>
           </View>
+
           <Text style={styles.text}>ชื่อ นามสกุล</Text>
+
           <Text style={styles.text}>Email@gmail.com</Text>
+
           <TouchableOpacity style={styles.passButton}>
             <Text style={[styles.text, { color: "white" }]}>
               แก้ไข Password
             </Text>
           </TouchableOpacity>
+
           <TouchableOpacity
             style={[styles.passButton, { backgroundColor: "#D12121FF" }]}
           >
@@ -69,6 +69,7 @@ const styles = StyleSheet.create({
     backgroundColor: "gray",
     padding: 35,
   },
+
   container2: {
     backgroundColor: "white",
     borderRadius: 50,
@@ -76,6 +77,7 @@ const styles = StyleSheet.create({
     flex: 1,
     rowGap: 25,
   },
+
   image: {
     height: 100,
     width: 100,
@@ -83,11 +85,13 @@ const styles = StyleSheet.create({
     overflow: "hidden",
     backgroundColor: "gray",
   },
+
   text: {
     fontWeight: "bold",
     fontSize: 20,
     //marginTop: 15,
   },
+
   passButton: {
     backgroundColor: "#3F62D6FF",
     borderRadius: 15,

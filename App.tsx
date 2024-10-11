@@ -8,6 +8,8 @@ import { createDrawerNavigator } from "@react-navigation/drawer";
 import MenuScreen from "./screen/MenuScreen";
 import React from "react";
 import ProfileScreen from "./screen/ProfileScreen";
+import UserStoreScreen from "./screen/UserStoreScreen";
+import CartScreen from "./screen/CartScreen";
 
 const HomeStack = createNativeStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -51,6 +53,16 @@ export default function App(): React.JSX.Element {
             name="Profile"
             component={ProfileScreen}
             options={{ title: "" }}
+          />
+          <HomeStack.Screen
+            name="UserStore"
+            component={UserStoreScreen}
+            options={{ title: "" }}
+          />
+          <HomeStack.Screen
+            name="Cart"
+            component={CartScreen}
+            options={{ title: "รถเข็น" }}
           />
         </HomeStack.Navigator>
       </NavigationContainer>

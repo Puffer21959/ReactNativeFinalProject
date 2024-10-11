@@ -23,7 +23,7 @@ const HomeScreen = ({ props }: any): React.JSX.Element => {
           <Item
             title="cart"
             iconName="cart-outline"
-            onPress={() => console.log("gotoCart")}
+            onPress={() => navigation.navigate("Cart")}
           />
           <Item
             title="profile"
