@@ -7,7 +7,8 @@ import {
 } from "react-native";
 import React from "react";
 
-//TODO: List of item in cart
+//TODO: >List of item in cart
+//      >Payment Process
 
 const CartScreen = (): React.JSX.Element => {
   return (

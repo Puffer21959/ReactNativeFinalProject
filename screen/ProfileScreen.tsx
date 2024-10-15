@@ -19,7 +19,8 @@ const ProfileScreen = (): React.JSX.Element => {
         quality: 1,
       });
 
-      console.log(result);
+      //see what's the ImagePick
+      //console.log(result);
 
       if (!result.canceled) {
         setImage(result.assets[0].uri);
