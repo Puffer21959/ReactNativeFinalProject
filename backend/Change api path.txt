@@ -1,0 +1,18 @@
+Change api path
+1. Move the api.php file and any other relevant files from your current XAMPP directory to C:\Users\nopph\ReactNativeFinalProject\backend
+2. Open the httpd-vhosts.conf file located in C:\xampp\apache\conf\extra\
+3. Add code
+
+	<VirtualHost *:80>
+    DocumentRoot "C:/Users/nopph/ReactNativeFinalProject/backend"
+    ServerName reactnativebackend.local
+    <Directory "C:/Users/nopph/ReactNativeFinalProject/backend">
+        AllowOverride All
+        Require all granted
+    </Directory>
+</VirtualHost>
+
+4. Open the hosts file located at C:\Windows\System32\drivers\etc\hosts in a text editor with administrator privileges.
+5. Add Line 127.0.0.1 reactnativebackend.local
+
+6. New path http://reactnativebackend.local/api.php
