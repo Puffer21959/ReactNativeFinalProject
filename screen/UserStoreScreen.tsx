@@ -19,7 +19,8 @@ const UserStoreScreen = (): React.JSX.Element => {
         quality: 1,
       });
 
-      console.log(result);
+      //here to see what ImagePicker get
+      //console.log(result);
 
       if (!result.canceled) {
         setImage(result.assets[0].uri);
@@ -40,7 +41,10 @@ const UserStoreScreen = (): React.JSX.Element => {
             <Image source={{ uri: image }} style={styles.storeImage} />
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.button}>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() => console.log("Toggle Shop Status")}
+          >
             <Text
               style={{ color: "#FFFFFFFF", fontWeight: "bold", fontSize: 22 }}
             >
