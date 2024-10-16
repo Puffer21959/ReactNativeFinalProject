@@ -2,13 +2,28 @@ import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import React, { useState } from "react";
 import * as ImagePicker from "expo-image-picker";
 
+import { selectAuthState } from "../auth/auth-slice";
+import { useAppSelector } from "../redux-toolkit/hook";
+import axios from "axios";
+
 //TODO: >Make it look better
 //      >Connect to Database
+//      >replace template with database instead
 
 const ProfileScreen = (): React.JSX.Element => {
   const [image, setImage] = useState<string>(
     Image.resolveAssetSource(require("../assets/favicon.png")).uri
   );
+
+  const { profile } = useAppSelector(selectAuthState);
+
+  const fetchImg = async () => {
+    const url = `http://192.168.1.165:3000/api/selectImg?target=${
+      profile + "Profile"
+    }`;
+    const response = await axios.get(url);
+    console.log(response.data[0].ImageData);
+  };
 
   const pickImage = async () => {
     try {
@@ -41,8 +56,10 @@ const ProfileScreen = (): React.JSX.Element => {
             </TouchableOpacity>
           </View>
 
-          <Text style={styles.text}>ชื่อ นามสกุล</Text>
+          {/*profile.name */}
+          <Text style={styles.text}>{profile}</Text>
 
+          {/*profile.email */}
           <Text style={styles.text}>Email@gmail.com</Text>
 
           <TouchableOpacity style={styles.passButton}>
@@ -55,6 +72,13 @@ const ProfileScreen = (): React.JSX.Element => {
             style={[styles.passButton, { backgroundColor: "#D12121FF" }]}
           >
             <Text style={[styles.text, { color: "white" }]}>ลบบัญชี</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={[styles.passButton, { backgroundColor: "red" }]}
+            onPress={fetchImg}
+          >
+            <Text style={[styles.text, { color: "white" }]}>Test</Text>
           </TouchableOpacity>
         </View>
       </View>

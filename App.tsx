@@ -10,6 +10,8 @@ import React from "react";
 import ProfileScreen from "./screen/ProfileScreen";
 import UserStoreScreen from "./screen/UserStoreScreen";
 import CartScreen from "./screen/CartScreen";
+import { Provider } from "react-redux";
+import { store } from "./redux-toolkit/store";
 
 const HomeStack = createNativeStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -31,41 +33,43 @@ function HomeStackScreen() {
 
 export default function App(): React.JSX.Element {
   return (
-    <SafeAreaProvider>
-      <NavigationContainer>
-        <HomeStack.Navigator initialRouteName="Login">
-          <HomeStack.Screen
-            name="Login"
-            component={Login}
-            options={{ headerShown: false }}
-          />
-          <HomeStack.Screen
-            name="Register"
-            component={Register}
-            options={{ headerTitle: "" }}
-          />
-          <HomeStack.Screen
-            name="Home"
-            component={HomeStackScreen}
-            options={{ headerBackVisible: false, headerShown: false }}
-          />
-          <HomeStack.Screen
-            name="Profile"
-            component={ProfileScreen}
-            options={{ title: "" }}
-          />
-          <HomeStack.Screen
-            name="UserStore"
-            component={UserStoreScreen}
-            options={{ title: "" }}
-          />
-          <HomeStack.Screen
-            name="Cart"
-            component={CartScreen}
-            options={{ title: "รถเข็น" }}
-          />
-        </HomeStack.Navigator>
-      </NavigationContainer>
-    </SafeAreaProvider>
+    <Provider store={store}>
+      <SafeAreaProvider>
+        <NavigationContainer>
+          <HomeStack.Navigator initialRouteName="Login">
+            <HomeStack.Screen
+              name="Login"
+              component={Login}
+              options={{ headerShown: false }}
+            />
+            <HomeStack.Screen
+              name="Register"
+              component={Register}
+              options={{ headerTitle: "" }}
+            />
+            <HomeStack.Screen
+              name="Home"
+              component={HomeStackScreen}
+              options={{ headerBackVisible: false, headerShown: false }}
+            />
+            <HomeStack.Screen
+              name="Profile"
+              component={ProfileScreen}
+              options={{ title: "" }}
+            />
+            <HomeStack.Screen
+              name="UserStore"
+              component={UserStoreScreen}
+              options={{ title: "" }}
+            />
+            <HomeStack.Screen
+              name="Cart"
+              component={CartScreen}
+              options={{ title: "รถเข็น" }}
+            />
+          </HomeStack.Navigator>
+        </NavigationContainer>
+      </SafeAreaProvider>
+    </Provider>
   );
 }

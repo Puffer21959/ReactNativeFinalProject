@@ -6,7 +6,11 @@ import {
   HeaderButtons,
   Item,
 } from "react-navigation-header-buttons";
-import { useNavigation } from "@react-navigation/native";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
+import { selectAuthState, setProfile, setGallery } from "../auth/auth-slice";
+import { useAppDispatch, useAppSelector } from "../redux-toolkit/hook";
+
+//TODO: >Create shop list
 
 const MaterialHeaderButton = (props: any) => (
   <HeaderButton IconComponent={MaterialIcon} iconSize={23} {...props} />
@@ -14,6 +18,13 @@ const MaterialHeaderButton = (props: any) => (
 
 const HomeScreen = ({ props }: any): React.JSX.Element => {
   const navigation = useNavigation<any>();
+  const dispatch = useAppDispatch();
+  const { profile } = useAppSelector(selectAuthState);
+
+  useFocusEffect(() => {
+    dispatch(setProfile("testUser"));
+    console.log(profile);
+  });
 
   useLayoutEffect(() => {
     navigation.setOptions({

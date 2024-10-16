@@ -1,7 +1,7 @@
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import React from "react";
+import React, { useEffect } from "react";
 
-const MenuScreen = ({ navigation }: any): React.JSX.Element => {
+const MenuScreen = ({ navigation, route }: any): React.JSX.Element => {
   function Line() {
     return (
       <View
@@ -103,5 +103,4 @@ const styles = StyleSheet.create({
   button: {
     marginVertical: 10,
   },
-  
 });
