@@ -19,15 +19,18 @@ const Login = (): React.JSX.Element => {
   const [password, setPassword] = useState("");
 
   const fetchUser = async () => {
-    const url = `http://192.168.1.115:3000/api/select?email=${email}&password=${password}`;
+    const url = `http://192.168.1.165:3000/api/select?email=${email}&password=${password}`;
     try {
       const response = await axios.get(url);
-      console.log(response.data);
+      //console.log(response.data);
 
       // Assuming response.data is true when credentials match
-      if (response.data) {
-        // Adjust based on your actual response
-        navigation.navigate("Home");
+      if (response.data != "deny") {
+        // Adjust based on your actual response   
+        navigation.navigate("Home", {
+          screen: "Feed",
+          params: { userID: response.data },
+        });
       } else {
         alert("Login failed! Incorrect email or password.");
       }
@@ -45,8 +48,11 @@ const Login = (): React.JSX.Element => {
     } else if (password === "") {
       alert("Please enter password");
     } else {
-     fetchUser();
+      fetchUser();
     }
+
+    setEmail("");
+    setPassword("");
   }
 
   function renderElement() {
