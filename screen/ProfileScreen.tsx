@@ -8,8 +8,6 @@ import axios from "axios";
 import Axios from "axios";
 
 //TODO: >Make it look better
-//      >Connect to Database
-//      >replace template with database instead
 
 const ProfileScreen = (): React.JSX.Element => {
   const [image, setImage] = useState<string>(
@@ -24,12 +22,14 @@ const ProfileScreen = (): React.JSX.Element => {
       const url = `http://192.168.1.165:3000/api/selectImg?target=${
         currentUser + "Profile"
       }`;
+
       const res = await axios.get(url);
       //console.log(res);
 
       if (res.data != "") {
         //console.log("attemp");
         setImage(res.data[0].ImageData);
+
         setResult(true);
         //console.log(image);
       } else {
@@ -109,13 +109,6 @@ const ProfileScreen = (): React.JSX.Element => {
             style={[styles.passButton, { backgroundColor: "#D12121FF" }]}
           >
             <Text style={[styles.text, { color: "white" }]}>ลบบัญชี</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={[styles.passButton, { backgroundColor: "red" }]}
-            onPress={fetchImg}
-          >
-            <Text style={[styles.text, { color: "white" }]}>Test</Text>
           </TouchableOpacity>
         </View>
       </View>

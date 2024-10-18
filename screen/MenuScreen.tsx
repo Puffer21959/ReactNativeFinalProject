@@ -1,7 +1,37 @@
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
+import { useAppSelector } from "../redux-toolkit/hook";
+import { selectAuthState } from "../auth/auth-slice";
+import axios from "axios";
 
 const MenuScreen = ({ navigation, route }: any): React.JSX.Element => {
+  const [image, setImage] = useState<string>(
+    Image.resolveAssetSource(require("../assets/favicon.png")).uri
+  );
+
+  const { currentUser } = useAppSelector(selectAuthState);
+
+  const fetchImg = async () => {
+    try {
+      const url = `http://192.168.1.165:3000/api/selectImg?target=${
+        currentUser + "Profile"
+      }`;
+
+      //console.log(currentUser);
+
+      const res = await axios.get(url);
+
+      if (res.data != "") {
+        setImage(res.data[0].ImageData);
+      } else {
+        console.log("no Img result");
+        //console.log(res);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   function Line() {
     return (
       <View
@@ -15,14 +45,16 @@ const MenuScreen = ({ navigation, route }: any): React.JSX.Element => {
     );
   }
 
+  useEffect(() => {
+    fetchImg();
+    //console.log(image);
+  }, []);
+
   return (
     <>
       <View style={styles.container1}>
         <View style={{ flexDirection: "row" }}>
-          <Image
-            source={require("../assets/favicon.png")}
-            style={styles.image}
-          />
+          <Image source={{ uri: image }} style={styles.image} />
           <Text style={styles.profileName}>ชื่อ นามสกุล</Text>
         </View>
 

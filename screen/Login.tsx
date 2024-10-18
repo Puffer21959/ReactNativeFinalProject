@@ -10,6 +10,8 @@ import { styleLogin } from "../styles/styles";
 import MaterialIcon from "react-native-vector-icons/MaterialCommunityIcons";
 import { useNavigation } from "@react-navigation/native";
 import axios from "axios";
+import { useAppDispatch } from "../redux-toolkit/hook";
+import { setCurrentUser } from "../auth/auth-slice";
 
 const Login = (): React.JSX.Element => {
   const navigation = useNavigation<any>();
@@ -17,6 +19,8 @@ const Login = (): React.JSX.Element => {
   const [page, setpage] = useState(1);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
+  const dispatch = useAppDispatch();
 
   const fetchUser = async () => {
     const url = `http://192.168.1.165:3000/api/select?email=${email}&password=${password}`;
@@ -26,11 +30,11 @@ const Login = (): React.JSX.Element => {
 
       // Assuming response.data is true when credentials match
       if (response.data != "deny") {
-        // Adjust based on your actual response   
-        navigation.navigate("Home", {
-          screen: "Feed",
-          params: { userID: response.data },
-        });
+        // Adjust based on your actual response
+
+        dispatch(setCurrentUser(response.data[0].ID));
+
+        navigation.navigate("Home");
       } else {
         alert("Login failed! Incorrect email or password.");
       }

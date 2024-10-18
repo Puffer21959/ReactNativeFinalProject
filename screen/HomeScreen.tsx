@@ -26,24 +26,30 @@ const MaterialHeaderButton = (props: any) => (
 const HomeScreen = ({ route }: any): React.JSX.Element => {
   const navigation = useNavigation<any>();
   const dispatch = useAppDispatch();
-  const { profile } = useAppSelector(selectAuthState);
+  const { profile, currentUser } = useAppSelector(selectAuthState);
 
   const fetchImg = async () => {
     const url = `http://192.168.1.165:3000/api/selectImg?target=${profile}`;
+
     const response = await axios.get(url);
+
     console.log(response.data);
   };
 
   const fetchProfile = async () => {
-    const url = `http://192.168.1.165:3000/api/getProfile?currentUser=${route.params.userID[0].ID}`;
+    const url = `http://192.168.1.165:3000/api/getProfile?currentUser=${currentUser}`;
+
     const response = await axios.get(url);
+
     dispatch(setProfile(response.data[0]));
-    console.log(response.data[0]);
+
+    //console.log(response.data[0]);
   };
 
   useEffect(() => {
+    console.log(currentUser)
     //get user ID
-    dispatch(setCurrentUser(route.params.userID[0].ID));
+    //dispatch(setCurrentUser(route.params.userID[0].ID));
     //console.log(route.params.userID[0].ID + 'route');
     //console.log(currentUser + "user");
 
