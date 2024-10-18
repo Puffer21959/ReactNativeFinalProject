@@ -1,8 +1,9 @@
-import { Text, TouchableOpacity, View, TextInput } from "react-native";
+import { Text, TouchableOpacity, View, TextInput, Alert } from "react-native";
 import React, { useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { styleRegister } from "../styles/styles";
 import MaterialIcon from "react-native-vector-icons/MaterialCommunityIcons";
+import axios, { Axios } from "axios";
 
 const Register = (): React.JSX.Element => {
   const navigation = useNavigation<any>();
@@ -12,6 +13,47 @@ const Register = (): React.JSX.Element => {
   const [name, setName] = useState("");
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
+
+  const fetchUser = async () => {
+    const url = `http://192.168.1.100:3000/api/choose?email=${email}`;
+    try {
+      const response = await axios.get(url);
+      console.log("Fetch User Response:", response.data);
+
+      // Check for the existence of 'exists'
+      console.log("Checking if user exists:", response.data.exists);
+
+      if (response.data.exists) {
+        alert("This user already exists");
+      } else {
+        alert("Register Complete");
+        navigation.navigate("Login");
+        await axios.post("http://192.168.1.100:3000/api/insert", {
+          ID: Date.now().toString(),
+          Email: email,
+          Name: name,
+          Password: password,
+        });
+      }
+    } catch (error) {
+      console.error("Error fetching user:", error);
+      alert("Error connecting to the server.");
+    }
+  };
+  //register
+  function checkRegister() {
+    if (email === "" || password === "" || name === "" || confirm === "") {
+      Alert.alert("Register failed", "Please enter all information");
+    } else if (!email.includes("@")) {
+      Alert.alert("Invalid Email", "Please enter a valid email address.");
+    } else if (password.length < 8) {
+      Alert.alert("Invalid Password", "Password must at least have 8 letter");
+    } else if (password !== confirm) {
+      Alert.alert("Invalid Password", "Password do not match");
+    } else {
+      fetchUser();
+    }
+  }
 
   function renderElement() {
     if (page == 1) {
@@ -88,12 +130,14 @@ const Register = (): React.JSX.Element => {
             <TextInput
               style={styleRegister.input}
               placeholder="กรอกรหัสผ่าน"
+              secureTextEntry={true}
               value={password}
               onChangeText={setPassword}
             />
             <TextInput
               style={styleRegister.input}
               placeholder="ยืนยันรหัสผ่านอีกครั้ง"
+              secureTextEntry={true}
               value={confirm}
               onChangeText={setConfirm}
             />
@@ -101,7 +145,7 @@ const Register = (): React.JSX.Element => {
             {/*TODO: ระบบลงทะเบียน*/}
             <TouchableOpacity
               style={styleRegister.filledButton}
-              onPress={() => navigation.navigate("Home")}
+              onPress={checkRegister}
             >
               <Text style={{ color: "white", fontWeight: "bold" }}>
                 ลงทะเบียน

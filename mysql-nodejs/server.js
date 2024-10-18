@@ -25,7 +25,7 @@ app.post("/api/insert", (req, res) => {
   const Email = req.body.Email;
 
   const sqlInsert =
-    "INSERT INTO User (ID,Email,Name,Password) VALUES (?,?,?,?)";
+    "INSERT INTO Model (ID,Email,Name,Password) VALUES (?,?,?,?)";
   db.query(sqlInsert, [ID, Email, Name, Password], (err, results) => {
     console.log(err);
   });
@@ -52,6 +52,26 @@ app.get("/api/selectImg", (req, res) => {
     console.log(result.length);
     if (result.length != 0) return res.send(result);
     res.send("fail to get image");
+  });
+});
+
+app.get("/api/choose", (req, res) => {
+  const email = req.query.email;
+  console.log("email : " + email);
+
+  const sqlStatement = "SELECT ID FROM Model WHERE Email = ?";
+  db.query(sqlStatement, [email], (err, result) => {
+    if (err) {
+      console.error("Database error:", err);
+      return res.status(500).send(false); // Respond with false on error
+    }
+    console.log("Number of results:", result.length);
+    // Check if any results were returned
+    if (result.length > 0) {
+      return res.send({ exists: true });
+    } else {
+      res.send({ exists: false });
+    }
   });
 });
 

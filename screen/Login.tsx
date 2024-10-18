@@ -4,6 +4,7 @@ import {
   TextInput,
   TouchableOpacity,
   View,
+  Alert
 } from "react-native";
 import React, { useState } from "react";
 import { styleLogin } from "../styles/styles";
@@ -15,11 +16,12 @@ const Login = (): React.JSX.Element => {
   const navigation = useNavigation<any>();
 
   const [page, setpage] = useState(1);
+  const [name, setName]= useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   const fetchUser = async () => {
-    const url = `http://192.168.1.115:3000/api/select?email=${email}&password=${password}`;
+    const url = `http://192.168.1.100:3000/api/select?email=${email}&password=${password}`;
     try {
       const response = await axios.get(url);
       console.log(response.data);
@@ -29,21 +31,21 @@ const Login = (): React.JSX.Element => {
         // Adjust based on your actual response
         navigation.navigate("Home");
       } else {
-        alert("Login failed! Incorrect email or password.");
+        Alert.alert("Login failed","Incorrect email or password.");
       }
     } catch (error) {
       console.error(error);
-      alert("Error connecting to the server.");
+      Alert.alert("Connect fail","Error connecting to the server.");
     }
   };
 
   function checkLogin() {
     if (email === "" && password === "") {
-      alert("Please enter emaiil and password");
+      Alert.alert("Login failed","Please enter email and password");
     } else if (email === "") {
-      alert("Please enter email");
+      Alert.alert("Login failed","Please enter email");
     } else if (password === "") {
-      alert("Please enter password");
+      Alert.alert("Login failed","Please enter password");
     } else {
      fetchUser();
     }
@@ -110,6 +112,7 @@ const Login = (): React.JSX.Element => {
             <TextInput
               style={styleLogin.input}
               placeholder="กรอกรหัสผ่าน"
+              secureTextEntry={true}
               value={password}
               onChangeText={setPassword}
             />
