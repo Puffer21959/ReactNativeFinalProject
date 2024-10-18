@@ -91,6 +91,26 @@ app.put("/api/updateImg", (req, res) => {
   });
 });
 
+app.get("/api/choose", (req, res) => {
+  const email = req.query.email;
+  console.log("email : " + email);
+
+  const sqlStatement = "SELECT ID FROM Model WHERE Email = ?";
+  db.query(sqlStatement, [email], (err, result) => {
+    if (err) {
+      console.error("Database error:", err);
+      return res.status(500).send(false); // Respond with false on error
+    }
+    console.log("Number of results:", result.length);
+    // Check if any results were returned
+    if (result.length > 0) {
+      return res.send({ exists: true });
+    } else {
+      res.send({ exists: false });
+    }
+  });
+});
+
 /* app.put("/api/update",(req,res)=>{
     const Email = req.body.Email
     const Password = req.body.Password
