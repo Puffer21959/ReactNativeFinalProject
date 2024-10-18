@@ -39,8 +39,18 @@ app.get("/api/select", (req, res) => {
   const sqlStatement = "select ID from Model where Email = ? and Password = ?";
   db.query(sqlStatement, [email, password], (err, result) => {
     console.log(result.length);
-    if (result.length != 0) return res.send(true);
-    res.send(false);
+    if (result.length != 0) return res.send(result);
+    res.send("deny");
+  });
+});
+
+app.get("/api/getProfile", (req, res) => {
+  const currentUser = req.query.currentUser;
+  const sqlStatement = "select * from Model WHERE ID = ?";
+  db.query(sqlStatement, [currentUser], (err, result) => {
+    console.log("get Profile");
+    if (result.length != 0) return res.send(result);
+    console.log(err);
   });
 });
 
@@ -50,8 +60,34 @@ app.get("/api/selectImg", (req, res) => {
   const sqlStatement = "select ImageData from Image where ImageID = ?";
   db.query(sqlStatement, [target], (err, result) => {
     console.log(result.length);
-    if (result.length != 0) return res.send(result);
-    res.send("fail to get image");
+    if (result.length != 0) {
+      return res.send(result);
+    } else {
+      return res.send(null);
+    }
+  });
+});
+
+app.post("/api/uploadImg", (req, res) => {
+  const ImageID = req.body.ImageID;
+  const ImageData = req.body.ImageData;
+  const ID = req.body.ID;
+
+  const sqlInsert = "INSERT INTO Image VALUES (?,?,?)";
+  db.query(sqlInsert, [ImageID, ImageData, ID], (err, result) => {
+    console.log(err);
+  });
+});
+
+app.put("/api/updateImg", (req, res) => {
+  const ImageData = req.body.ImageData;
+  const ImageID = req.body.ImageID;
+
+  const sqlUpdate = "UPDATE Image SET ImageData = ? WHERE ImageID = ?";
+
+  db.query(sqlUpdate, [ImageData, ImageID], (err, results) => {
+    console.log(err);
+    console.log("Table Updated");
   });
 });
 
