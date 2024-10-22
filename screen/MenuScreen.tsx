@@ -13,7 +13,7 @@ const MenuScreen = ({ navigation, route }: any): React.JSX.Element => {
 
   const fetchImg = async () => {
     try {
-      const url = `http://192.168.1.165:3000/api/selectImg?target=${
+      const url = `http://192.168.1.100:3000/api/selectImg?target=${
         currentUser + "Profile"
       }`;
 

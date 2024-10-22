@@ -7,6 +7,7 @@ interface AuthState {
   profile: any | null;
   gallery: any | null;
   currentUser: string | null;
+  shopStatus: boolean;
 }
 
 const initialState: AuthState = {
@@ -14,6 +15,7 @@ const initialState: AuthState = {
   profile: null,
   gallery: null,
   currentUser: null,
+  shopStatus: false,
 };
 
 export const authSlice = createSlice({
@@ -35,10 +37,13 @@ export const authSlice = createSlice({
     setCurrentUser(state, action: PayloadAction<any | null>) {
       state.currentUser = action.payload;
     },
+    setShopStatus(state, action: PayloadAction<any | null>) { 
+      state.shopStatus = action.payload;
+    },
   },
 });
 
-export const { setIsLoading, setProfile, setGallery, setCurrentUser } = authSlice.actions;
+export const { setIsLoading, setProfile, setGallery, setCurrentUser, setShopStatus } = authSlice.actions;
 
 export const selectAuthState = (state: RootState) => state.authState;
 

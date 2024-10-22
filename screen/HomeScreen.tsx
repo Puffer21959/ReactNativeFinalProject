@@ -15,6 +15,7 @@ import {
 } from "../auth/auth-slice";
 import { useAppDispatch, useAppSelector } from "../redux-toolkit/hook";
 import axios from "axios";
+import { store } from "../redux-toolkit/store";
 
 //TODO: >Create shop list
 //      >make function that fetch both profile and image data
@@ -29,7 +30,7 @@ const HomeScreen = ({ route }: any): React.JSX.Element => {
   const { profile, currentUser } = useAppSelector(selectAuthState);
 
   const fetchImg = async () => {
-    const url = `http://192.168.1.165:3000/api/selectImg?target=${profile}`;
+    const url = `http://192.168.1.100:3000/api/selectImg?target=${profile}`;
 
     const response = await axios.get(url);
 
@@ -37,7 +38,7 @@ const HomeScreen = ({ route }: any): React.JSX.Element => {
   };
 
   const fetchProfile = async () => {
-    const url = `http://192.168.1.165:3000/api/getProfile?currentUser=${currentUser}`;
+    const url = `http://192.168.1.100:3000/api/getProfile?currentUser=${currentUser}`;
 
     const response = await axios.get(url);
 
@@ -47,14 +48,15 @@ const HomeScreen = ({ route }: any): React.JSX.Element => {
   };
 
   useEffect(() => {
-    console.log(currentUser)
+    console.log(currentUser);    
     //get user ID
     //dispatch(setCurrentUser(route.params.userID[0].ID));
     //console.log(route.params.userID[0].ID + 'route');
     //console.log(currentUser + "user");
 
-    fetchProfile();
-    //console.log(profile + "profile");
+    //fetchProfile();
+
+    //console.log(profile + " Homeprofile");
   }, []);
 
   useLayoutEffect(() => {

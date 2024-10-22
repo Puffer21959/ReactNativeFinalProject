@@ -26,7 +26,7 @@ const Login = (): React.JSX.Element => {
 
   const fetchUser = async () => {
 
-    const url = `http://192.168.1.165:3000/api/select?email=${email}&password=${password}`;
+    const url = `http://192.168.1.100:3000/api/select?email=${email}&password=${password}`;
 
     try {
       const response = await axios.get(url);
