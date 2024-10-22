@@ -11,11 +11,11 @@ const MenuScreen = ({ navigation, route }: any): React.JSX.Element => {
   );
   const [userName, setUserName] = useState<string>("ชื่อ นามสกุล");
 
-  const { currentUser, profile } = useAppSelector(selectAuthState);
+  const { currentUser, profile, IP } = useAppSelector(selectAuthState);
   const dispatch = useAppDispatch();
 
   const fetchProfile = async () => {
-    const url = `http://192.168.1.165:3000/api/getProfile?currentUser=${currentUser}`;
+    const url = `http://${IP}:3000/api/getProfile?currentUser=${currentUser}`;
 
     const response = await axios.get(url);
 
@@ -27,7 +27,7 @@ const MenuScreen = ({ navigation, route }: any): React.JSX.Element => {
 
   const fetchImg = async () => {
     try {
-      const url = `http://192.168.1.165:3000/api/selectImg?target=${
+      const url = `http://${IP}:3000/api/selectImg?target=${
         currentUser + "Profile"
       }`;
       //console.log(currentUser);
@@ -63,6 +63,7 @@ const MenuScreen = ({ navigation, route }: any): React.JSX.Element => {
     navigation.addListener("focus", () => {
       fetchImg();
       fetchProfile();
+      //console.log(IP);
       //console.log(profile + " focus");
     });
     //console.log(image);

@@ -12,6 +12,7 @@ import UserStoreScreen from "./screen/UserStoreScreen";
 import CartScreen from "./screen/CartScreen";
 import { Provider } from "react-redux";
 import { store } from "./redux-toolkit/store";
+import StoreScreen from "./screen/StoreScreen";
 
 const HomeStack = createNativeStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -66,6 +67,11 @@ export default function App(): React.JSX.Element {
               name="Cart"
               component={CartScreen}
               options={{ title: "รถเข็น" }}
+            />
+            <HomeStack.Screen
+              name="Store"
+              component={StoreScreen}
+              options={{ title: "" }}
             />
           </HomeStack.Navigator>
         </NavigationContainer>

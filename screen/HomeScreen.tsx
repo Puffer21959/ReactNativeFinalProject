@@ -6,16 +6,13 @@ import {
   HeaderButtons,
   Item,
 } from "react-navigation-header-buttons";
-import { useFocusEffect, useNavigation } from "@react-navigation/native";
+import { useNavigation } from "@react-navigation/native";
 import {
   selectAuthState,
-  setProfile,
-  setGallery,
-  setCurrentUser,
+  setProfile,    
 } from "../auth/auth-slice";
 import { useAppDispatch, useAppSelector } from "../redux-toolkit/hook";
 import axios from "axios";
-import { store } from "../redux-toolkit/store";
 
 //TODO: >Create shop list
 //      >make function that fetch both profile and image data
@@ -28,24 +25,6 @@ const HomeScreen = ({ route }: any): React.JSX.Element => {
   const navigation = useNavigation<any>();
   const dispatch = useAppDispatch();
   const { profile, currentUser } = useAppSelector(selectAuthState);
-
-  const fetchImg = async () => {
-    const url = `http://192.168.1.165:3000/api/selectImg?target=${profile}`;
-
-    const response = await axios.get(url);
-
-    console.log(response.data);
-  };
-
-  const fetchProfile = async () => {
-    const url = `http://192.168.1.165:3000/api/getProfile?currentUser=${currentUser}`;
-
-    const response = await axios.get(url);
-
-    dispatch(setProfile(response.data[0]));
-
-    //console.log(response.data[0]);
-  };
 
   useEffect(() => {
     console.log(currentUser);    
