@@ -1,14 +1,260 @@
-import { StyleSheet, Text, View } from "react-native";
-import React from "react";
+import {
+  StyleSheet,
+  Text,
+  View,
+  Image,
+  TouchableOpacity,
+  FlatList,
+  Modal,
+} from "react-native";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import MaterialIcon from "react-native-vector-icons/MaterialCommunityIcons";
+import { useAppSelector } from "../redux-toolkit/hook";
+import { selectAuthState } from "../auth/auth-slice";
 
-const StoreScreen = (): React.JSX.Element => {
+const StoreScreen = ({ navigation, route }): React.JSX.Element => {
+  let tempID = "1729602335364";
+
+  const { IP } = useAppSelector(selectAuthState);
+
+  const [image, setImage] = useState<string>(
+    Image.resolveAssetSource(require("../assets/favicon.png")).uri
+  );
+  const [storeData, setStoreData] = useState<any>({});
+  const [modalVisible, setModalVisible] = useState<boolean>(false);
+  const [target, setTarget] = useState<any>({});
+  const [loading, setLoading] = useState<boolean>(false);
+  const [items, setItems] = useState<any>({});
+
+  const fetchImg = async () => {
+    try {
+      const url = `http://${IP}:3000/api/selectImg?target=${tempID + "Shop"}`;
+
+      const res = await axios.get(url);
+      //console.log(res);
+
+      if (res.data != "") {
+        //console.log("attemp");
+        setImage(res.data[0].ImageData);
+
+        //setResult(true);
+        //console.log(image);
+      } else {
+        console.log("no Image result");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const fetchData = async () => {
+    const url = `http://${IP}:3000/api/getProfile?currentUser=${tempID}`;
+
+    const response = await axios.get(url);
+
+    setStoreData(response.data[0]);
+
+    console.log(response.data[0]);
+  };
+
+  const fetchItem = async () => {
+    try {
+      setLoading(true);
+      const url = `http://${IP}:3000/api/getItem?ID=${tempID}`;
+
+      const res = await axios.get(url);
+
+      if (res.data != "") {
+        setItems(res.data);
+        //console.log(res.data);
+        //console.log("get ITEM");
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const openModal = (target: any) => {
+    setTarget(target);
+    //console.log(items.length);
+    setModalVisible(true);
+  };
+
+  const _renderItem = ({ item, index }) => (
+    <>
+      <View style={{ flexDirection: "row" }}>
+        <TouchableOpacity onPress={() => openModal(item)}>
+          <Image
+            source={{ uri: item.ImageData }}
+            style={styles.listImage}
+            key={index}
+          />
+          <Text style={{ fontWeight: "bold", fontSize: 17 }}>
+            {item.ItemName}
+          </Text>
+          <View
+            style={{ flexDirection: "row", justifyContent: "space-between" }}
+          >
+            <Text style={{}}>ราคา {item.Price} บาท</Text>
+          </View>
+        </TouchableOpacity>
+      </View>
+    </>
+  );
+
+  useEffect(() => {
+    navigation.addListener("focus", () => {
+      fetchImg();
+      fetchData();
+      fetchItem();
+      console.log("fetch");
+    });
+  }, []);
+
   return (
-    <View>
-      <Text>StoreScreen</Text>
-    </View>
+    <>
+      <View style={styles.container1}>
+        <Image source={{ uri: image }} style={styles.background} />
+        <View style={styles.container2}>
+          <Image source={{ uri: image }} style={styles.storeImage} />
+
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() => console.log("ติดตาม")}
+          >
+            <Text
+              style={{ color: "#FFFFFFFF", fontWeight: "bold", fontSize: 22 }}
+            >
+              ติดตาม
+            </Text>
+          </TouchableOpacity>
+
+          <View style={styles.container3}>
+            <Text style={{ fontWeight: "bold", fontSize: 22 }}>
+              {storeData.ShopName}
+            </Text>
+
+            <View
+              style={{ flexDirection: "row", justifyContent: "space-between" }}
+            >
+              <Text style={{ fontSize: 18 }}>ผู้ติดตาม: 500</Text>
+              <Text style={{ fontSize: 18 }}>คะแนนร้าน: 9.8</Text>
+            </View>
+
+            <View style={[styles.container1, { marginTop: 25 }]}>
+              <Text style={{ fontSize: 22, fontWeight: "bold" }}>
+                รายการสินค้า
+              </Text>
+              <View style={{ paddingVertical: 15, flex: 1 }}>
+                <FlatList
+                  data={items}
+                  renderItem={_renderItem}
+                  keyExtractor={(Item, index) => JSON.stringify(Item)}
+                  numColumns={2}
+                  columnWrapperStyle={{ justifyContent: "space-between" }}
+                  extraData={loading}
+                  persistentScrollbar={true}
+                  contentContainerStyle={{
+                    paddingHorizontal: 20,
+                    paddingBottom: 20,
+                    rowGap: 10,
+                  }}
+                />
+              </View>
+            </View>
+          </View>
+        </View>
+      </View>
+      <Modal
+        visible={modalVisible}
+        transparent={true}
+        animationType="slide"
+        onRequestClose={() => setModalVisible(!modalVisible)}
+      >
+        <View style={{ backgroundColor: "#00000046", flex: 1 }}>
+          <View style={styles.modalView}>
+            <View>
+              <Text>{target.ItemName}</Text>
+            </View>
+            <TouchableOpacity onPress={() => setModalVisible(!modalVisible)}>
+              <Text style={{ top: "25%", color: "#4F6C8B" }}>
+                <MaterialIcon name="keyboard-backspace" size={12} />
+                ย้อนกลับ
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+    </>
   );
 };
 
 export default StoreScreen;
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  container1: {
+    flex: 1,
+  },
+
+  container2: {
+    flex: 4,
+    backgroundColor: "white",
+  },
+
+  background: {
+    flex: 1,
+    resizeMode: "stretch",
+  },
+
+  storeImage: {
+    width: 150,
+    height: 150,
+    borderRadius: 150 / 2,
+    position: "absolute",
+    top: -30,
+    start: 20,
+  },
+
+  button: {
+    position: "absolute",
+    right: 50,
+    top: 50,
+    borderRadius: 15,
+    padding: 10,
+    backgroundColor: "#4177BEFF",
+  },
+
+  container3: {
+    flex: 1,
+    marginTop: 120,
+    padding: 15,
+    rowGap: 10,
+  },
+
+  listImage: {
+    height: 100,
+    width: 150,
+    overflow: "hidden",
+    backgroundColor: "gray",
+  },
+
+  modalView: {
+    margin: 20,
+    backgroundColor: "white",
+    borderRadius: 8,
+    padding: 35,
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+    top: "15%",
+  },
+});

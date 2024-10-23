@@ -15,11 +15,11 @@ const ProfileScreen = ({ navigation }): React.JSX.Element => {
   );
   const [fetchResult, setResult] = useState(false);
 
-  const { currentUser, profile } = useAppSelector(selectAuthState);
+  const { currentUser, profile, IP } = useAppSelector(selectAuthState);
 
   const fetchImg = async () => {
     try {
-      const url = `http://192.168.1.100:3000/api/selectImg?target=${
+      const url = `http://${IP}:3000/api/selectImg?target=${
         currentUser + "Profile"
       }`;
 
@@ -56,13 +56,13 @@ const ProfileScreen = ({ navigation }): React.JSX.Element => {
         //console.log(image);
 
         if (fetchResult) {
-          Axios.put("http://192.168.1.100:3000/api/updateImg", {
+          Axios.put(`http://${IP}:3000/api/updateImg`, {
             ImageData: result.assets[0].uri,
             ImageID: currentUser + "Profile",
           });
           console.log("update");
         } else if (!fetchResult) {
-          Axios.post("http://192.168.1.100:3000/api/uploadImg", {
+          Axios.post(`http://${IP}:3000/api/uploadImg`, {
             ImageID: currentUser + "Profile",
             ImageData: result.assets[0].uri,
             ID: currentUser,
@@ -112,6 +112,9 @@ const ProfileScreen = ({ navigation }): React.JSX.Element => {
             style={[styles.passButton, { backgroundColor: "#D12121FF" }]}
           >
             <Text style={[styles.text, { color: "white" }]}>ลบบัญชี</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => navigation.navigate("Store")}>
+            <Text>test</Text>
           </TouchableOpacity>
         </View>
       </View>

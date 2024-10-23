@@ -68,6 +68,24 @@ app.get("/api/selectImg", (req, res) => {
   });
 });
 
+app.get("/api/getItem", (req, res) => {
+  const ID = req.query.ID;
+
+  const sqlStatement =
+    "select ItemID, ItemName, Price, ImageData from Item where ID = ?";
+
+  db.query(sqlStatement, [ID], (err, results) => {
+    //console.log(results.data.length);
+    //console.log("test");
+
+    if (results.length != 0) {
+      return res.send(results);
+    } else {
+      return res.send(JSON.parse("{}"));
+    }
+  });
+});
+
 app.post("/api/uploadImg", (req, res) => {
   const ImageID = req.body.ImageID;
   const ImageData = req.body.ImageData;
@@ -76,7 +94,27 @@ app.post("/api/uploadImg", (req, res) => {
   const sqlInsert = "INSERT INTO Image VALUES (?,?,?)";
   db.query(sqlInsert, [ImageID, ImageData, ID], (err, result) => {
     console.log(err);
+    console.log("Image Added");
   });
+});
+
+app.post("/api/uploadItem", (req, res) => {
+  const ItemID = req.body.ItemID;
+  const ItemName = req.body.ItemName;
+  const Price = req.body.Price;
+  const ID = req.body.ID;
+  const ImageData = req.body.ImageData;
+
+  const sqlInsert = "INSERT INTO Item VALUES (?,?,?,?,?)";
+
+  db.query(
+    sqlInsert,
+    [ItemID, ItemName, Price, ID, ImageData],
+    (err, results) => {
+      console.log(err);
+      console.log("Item Added");
+    }
+  );
 });
 
 app.put("/api/updateImg", (req, res) => {
@@ -111,6 +149,17 @@ app.put("/api/updateShop", (req, res) => {
   db.query(sqlUpdate, [shopName, ID], (err, results) => {
     console.log(err);
     console.log("ShopName Updated");
+  });
+});
+
+app.put("/api/deleteItem", (req, res) => {
+  const ItemID = req.body.ItemID;
+
+  const sqlStatement = "DELETE FROM Item WHERE ItemID = ?";
+
+  db.query(sqlStatement, [ItemID], (err, results) => {
+    console.log(err);
+    console.log(results);
   });
 });
 

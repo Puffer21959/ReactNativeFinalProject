@@ -5,7 +5,7 @@ import { RootState } from "../redux-toolkit/store";
 interface AuthState {
   isLoading: boolean;
   profile: any | null;
-  gallery: any | null;
+  IP: string | null;
   currentUser: string | null;
   shopStatus: boolean;
 }
@@ -13,7 +13,7 @@ interface AuthState {
 const initialState: AuthState = {
   isLoading: false,
   profile: null,
-  gallery: null,
+  IP: null,
   currentUser: null,
   shopStatus: false,
 };
@@ -30,8 +30,8 @@ export const authSlice = createSlice({
       state.profile = action.payload;
     },
 
-    setGallery(state, action: PayloadAction<any | null>) {
-      state.gallery = action.payload;
+    setIP(state, action: PayloadAction<any | null>) {
+      state.IP = action.payload;
     },
 
     setCurrentUser(state, action: PayloadAction<any | null>) {
@@ -43,7 +43,9 @@ export const authSlice = createSlice({
   },
 });
 
-export const { setIsLoading, setProfile, setGallery, setCurrentUser, setShopStatus } = authSlice.actions;
+
+export const { setIsLoading, setProfile, setIP, setCurrentUser,setShopStatus } =
+  authSlice.actions;
 
 export const selectAuthState = (state: RootState) => state.authState;
 

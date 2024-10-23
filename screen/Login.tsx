@@ -12,9 +12,11 @@ import MaterialIcon from "react-native-vector-icons/MaterialCommunityIcons";
 import { useNavigation } from "@react-navigation/native";
 import axios from "axios";
 import { useAppDispatch } from "../redux-toolkit/hook";
-import { setCurrentUser, setProfile } from "../auth/auth-slice";
+import { setCurrentUser, setIP } from "../auth/auth-slice";
 
 const Login = (): React.JSX.Element => {
+  let IP = "192.168.1.165";
+
   const navigation = useNavigation<any>();
 
   const [page, setpage] = useState(1);
@@ -23,6 +25,7 @@ const Login = (): React.JSX.Element => {
   const [password, setPassword] = useState("");
 
   const dispatch = useAppDispatch();
+  dispatch(setIP(IP));
 
   const fetchUser = async () => {
 

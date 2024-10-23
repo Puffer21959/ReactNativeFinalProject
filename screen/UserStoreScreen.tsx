@@ -6,6 +6,8 @@ import {
   TouchableOpacity,
   Modal,
   TextInput,
+  FlatList,
+  Alert,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import * as ImagePicker from "expo-image-picker";
@@ -19,7 +21,7 @@ import MaterialIcon from "react-native-vector-icons/MaterialCommunityIcons";
 //      >Connect to Database
 
 const UserStoreScreen = ({ navigation }): React.JSX.Element => {
-  const { currentUser, profile } = useAppSelector(selectAuthState);
+  const { currentUser, profile, IP } = useAppSelector(selectAuthState);
 
   const [image, setImage] = useState<string>(
     Image.resolveAssetSource(require("../assets/favicon.png")).uri
@@ -31,13 +33,17 @@ const UserStoreScreen = ({ navigation }): React.JSX.Element => {
     profile.ShopName ? profile.ShopName : "ชื่อร้านค้า"
   );
   const [textInput, setTextInput] = useState<string>("");
-  const [target, setTarget] = useState("");
-  const dispatch = useAppDispatch();
-  const { shopStatus } = useAppSelector(selectAuthState);
+  const [textInput2, setTextInput2] = useState<string>("");
+  const [target, setTarget] = useState<string>("");
+  const [items, setItems] = useState<any>({});
+  const [modalImg, setModalImg] = useState<string>(
+    Image.resolveAssetSource(require("../assets/favicon.png")).uri
+  );
+  const [loading, setLoading] = useState<boolean>(false);
 
   const fetchImg = async () => {
     try {
-      const url = `http://192.168.1.100:3000/api/selectImg?target=${
+      const url = `http://${IP}:3000/api/selectImg?target=${
         currentUser + "Shop"
       }`;
 
@@ -58,9 +64,27 @@ const UserStoreScreen = ({ navigation }): React.JSX.Element => {
     }
   };
 
+  const fetchItem = async () => {
+    try {
+      setLoading(true);
+      const url = `http://${IP}:3000/api/getItem?ID=${currentUser}`;
+
+      const res = await axios.get(url);
+
+      if (res.data != "") {
+        setItems(res.data);
+        //console.log("get ITEM");
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const UpdateShop = async () => {
     try {
-      Axios.put("http://192.168.1.100:3000/api/setStatus", {
+      Axios.put(`http://${IP}:3000/api/setStatus`, {
         ID: currentUser,
       });
       setStatus(!status);
@@ -87,7 +111,7 @@ const UserStoreScreen = ({ navigation }): React.JSX.Element => {
 
   const RenameShop = async () => {
     try {
-      Axios.put("http://192.168.1.100:3000/api/updateShop", {
+      Axios.put(`http://${IP}:3000/api/updateShop`, {
         ID: currentUser,
         shopName: textInput,
       });
@@ -100,8 +124,55 @@ const UserStoreScreen = ({ navigation }): React.JSX.Element => {
     }
   };
 
+  const addItem = async () => {
+    try {
+      let tempID = Date.now().toString();
+
+      if (
+        modalImg !==
+        Image.resolveAssetSource(require("../assets/favicon.png")).uri
+      ) {
+        Axios.post(`http://${IP}:3000/api/uploadItem`, {
+          ItemID: tempID,
+          ItemName: textInput,
+          Price: textInput2,
+          ID: currentUser,
+          ImageData: modalImg,
+        });
+
+        console.log("Item Added");
+        fetchItem();
+        console.log("Refresh List");
+        setModalVisible(!modalVisible);
+      } else if (
+        modalImg ===
+        Image.resolveAssetSource(require("../assets/favicon.png")).uri
+      ) {
+        Alert.alert("ไม่มีรูปสินค้า", "กรุณาอัปโหลดรูปสินค้า");
+      } else {
+        console.log("condition failed");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const deleteItem = async (target: string) => {
+    try {
+      Axios.put(`http://${IP}:3000/api/deleteItem`, {
+        ItemID: target,
+      });
+
+      console.log("deleted");
+      fetchItem();
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const openModal = (target: string) => {
     setTarget(target);
+    //console.log(items.length);
     setModalVisible(true);
   };
 
@@ -139,12 +210,55 @@ const UserStoreScreen = ({ navigation }): React.JSX.Element => {
   );
 
   const itemModal = () => (
-    <View>
-      <Text>ITEM</Text>
+    <View style={{ backgroundColor: "#00000046", flex: 1 }}>
+      <View style={styles.modalView}>
+        <View>
+          <View style={{ alignItems: "center" }}>
+            <TouchableOpacity
+              onPress={() => pickImage("item")}
+              style={{ marginBottom: 10 }}
+            >
+              <Image source={{ uri: modalImg }} style={styles.image} />
+            </TouchableOpacity>
+            <TextInput
+              style={styles.input}
+              value={textInput}
+              onChangeText={setTextInput}
+              placeholder="โปรดกรอกชื่อสินค้า"
+              maxLength={20}
+              keyboardType="default"
+            />
+            <TextInput
+              style={styles.input}
+              value={textInput2}
+              onChangeText={setTextInput2}
+              placeholder="โปรดกรอกราคา"
+              maxLength={20}
+              keyboardType="numeric"
+            />
+          </View>
+          <View
+            style={{ flexDirection: "row", justifyContent: "space-between" }}
+          >
+            <TouchableOpacity onPress={() => setModalVisible(!modalVisible)}>
+              <Text style={{ top: "25%", color: "#4F6C8B" }}>
+                <MaterialIcon name="keyboard-backspace" size={12} />
+                ย้อนกลับ
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.confirmButton}
+              onPress={() => addItem()}
+            >
+              <Text style={{ color: "white", fontWeight: "bold" }}>ตกลง</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </View>
     </View>
   );
 
-  const pickImage = async () => {
+  const pickImage = async (from: string) => {
     try {
       let result = await ImagePicker.launchImageLibraryAsync({
         mediaTypes: ImagePicker.MediaTypeOptions.All,
@@ -159,34 +273,75 @@ const UserStoreScreen = ({ navigation }): React.JSX.Element => {
       if (!result.canceled) {
         //console.log(image);
 
-        if (fetchResult) {
-          Axios.put("http://192.168.1.100:3000/api/updateImg", {
-            ImageData: result.assets[0].uri,
-            ImageID: currentUser + "Shop",
-          });
-          console.log("update");
-        } else if (!fetchResult) {
-          Axios.post("http://192.168.1.100:3000/api/uploadImg", {
-            ImageID: currentUser + "Shop",
-            ImageData: result.assets[0].uri,
-            ID: currentUser,
-          });
-          setResult(true);
-          console.log("upload");
-        }
+        if (from === "shop") {
+          if (fetchResult) {
+            Axios.put(`http://${IP}:3000/api/updateImg`, {
+              ImageData: result.assets[0].uri,
+              ImageID: currentUser + "Shop",
+            });
+            console.log("update");
+          } else if (!fetchResult) {
+            Axios.post(`http://${IP}:3000/api/uploadImg`, {
+              ImageID: currentUser + "Shop",
+              ImageData: result.assets[0].uri,
+              ID: currentUser,
+            });
+            setResult(true);
+            console.log("upload");
+          }
 
-        setImage(result.assets[0].uri);
+          setImage(result.assets[0].uri);
+        } else if (from === "item") {
+          setModalImg(result.assets[0].uri);
+          console.log(modalImg);
+        } else {
+          console.log("failed condition");
+        }
       }
     } catch (error) {
       console.log(error);
     }
   };
 
+  const _renderItem = ({ item, index }) => (
+    <>
+      <View style={{ flexDirection: "row" }}>
+        <View>
+          <Image
+            source={{ uri: item.ImageData }}
+            style={styles.listImage}
+            key={index}
+          />
+          <Text style={{ fontWeight: "bold", fontSize: 17 }}>
+            {item.ItemName}
+          </Text>
+          <View
+            style={{ flexDirection: "row", justifyContent: "space-between" }}
+          >
+            <Text style={{}}>ราคา {item.Price} บาท</Text>
+            <TouchableOpacity onPress={() => deleteItem(item.ItemID)}>
+              <MaterialIcon name="trash-can" size={25} />
+            </TouchableOpacity>
+          </View>
+        </View>
+      </View>
+    </>
+  );
+
   useEffect(() => {
     navigation.addListener("focus", () => {
       fetchImg();
+      fetchItem();
+      //console.log(profile);
     });
   }, []);
+
+  useEffect(() => {
+    setTextInput("");
+    setTextInput2("");
+    setModalImg(Image.resolveAssetSource(require("../assets/favicon.png")).uri);
+    //console.log("reset modal");
+  }, [modalVisible]);
 
   return (
     <>
@@ -194,7 +349,7 @@ const UserStoreScreen = ({ navigation }): React.JSX.Element => {
         <Image source={{ uri: image }} style={styles.background} />
 
         <View style={styles.container2}>
-          <TouchableOpacity onPress={pickImage}>
+          <TouchableOpacity onPress={() => pickImage("shop")}>
             <Image source={{ uri: image }} style={styles.storeImage} />
           </TouchableOpacity>
 
@@ -227,10 +382,37 @@ const UserStoreScreen = ({ navigation }): React.JSX.Element => {
             </View>
 
             <View style={[styles.container1, { marginTop: 25 }]}>
-              <Text style={{ fontSize: 22, fontWeight: "bold" }}>
-                รายการสินค้า
-              </Text>
-              {/* Flatlist with button to add item */}
+              <View style={{ flexDirection: "row" }}>
+                <Text style={{ fontSize: 22, fontWeight: "bold" }}>
+                  รายการสินค้า
+                </Text>
+                <TouchableOpacity
+                  style={{
+                    marginLeft: 25,
+                    backgroundColor: "#4177BEFF",
+                    borderRadius: 150 / 2,
+                  }}
+                  onPress={() => openModal("item")}
+                >
+                  <MaterialIcon name="hospital" size={30} color={"white"} />
+                </TouchableOpacity>
+              </View>
+              <View style={{ paddingVertical: 15, flex: 1 }}>
+                <FlatList
+                  data={items}
+                  renderItem={_renderItem}
+                  keyExtractor={(Item, index) => JSON.stringify(Item)}
+                  numColumns={2}
+                  columnWrapperStyle={{ justifyContent: "space-between" }}
+                  extraData={loading}
+                  persistentScrollbar={true}
+                  contentContainerStyle={{
+                    paddingHorizontal: 20,
+                    paddingBottom: 20,
+                    rowGap: 10,
+                  }}
+                />
+              </View>
             </View>
           </View>
         </View>
@@ -320,5 +502,20 @@ const styles = StyleSheet.create({
     padding: 10,
     backgroundColor: "#4177BEFF",
     borderRadius: 15,
+  },
+
+  image: {
+    height: 100,
+    width: 100,
+    borderRadius: 150 / 2,
+    overflow: "hidden",
+    backgroundColor: "gray",
+  },
+
+  listImage: {
+    height: 100,
+    width: 150,
+    overflow: "hidden",
+    backgroundColor: "gray",
   },
 });

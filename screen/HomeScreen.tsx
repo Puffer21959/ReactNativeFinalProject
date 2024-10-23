@@ -6,16 +6,13 @@ import {
   HeaderButtons,
   Item,
 } from "react-navigation-header-buttons";
-import { useFocusEffect, useNavigation } from "@react-navigation/native";
+import { useNavigation } from "@react-navigation/native";
 import {
   selectAuthState,
-  setProfile,
-  setGallery,
-  setCurrentUser,
+  setProfile,    
 } from "../auth/auth-slice";
 import { useAppDispatch, useAppSelector } from "../redux-toolkit/hook";
 import axios from "axios";
-import { store } from "../redux-toolkit/store";
 
 //TODO: >Create shop list
 //      >make function that fetch both profile and image data
