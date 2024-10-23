@@ -9,7 +9,7 @@ import Axios from "axios";
 
 //TODO: >Make it look better
 
-const ProfileScreen = (): React.JSX.Element => {
+const ProfileScreen = ({ navigation }): React.JSX.Element => {
   const [image, setImage] = useState<string>(
     Image.resolveAssetSource(require("../assets/favicon.png")).uri
   );
@@ -79,7 +79,10 @@ const ProfileScreen = (): React.JSX.Element => {
   };
 
   useEffect(() => {
-    fetchImg();
+    navigation.addListener("focus", () => {
+      fetchImg();
+    });
+
     //console.log(image);
   }, []);
 
@@ -94,10 +97,10 @@ const ProfileScreen = (): React.JSX.Element => {
           </View>
 
           {/*profile.name */}
-          <Text style={styles.text}>{profile.Name}</Text>
+          {/* <Text style={styles.text}>{profile.Name}</Text> */}
 
           {/*profile.email */}
-          <Text style={styles.text}>{profile.Email}</Text>
+          {/* <Text style={styles.text}>{profile.Email}</Text> */}
 
           <TouchableOpacity style={styles.passButton}>
             <Text style={[styles.text, { color: "white" }]}>

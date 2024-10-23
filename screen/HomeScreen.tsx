@@ -1,5 +1,5 @@
-import { StyleSheet, Text, View } from "react-native";
-import React, { useEffect, useLayoutEffect } from "react";
+import { StyleSheet, Text, View,FlatList } from "react-native";
+import React, { useEffect, useLayoutEffect, useState } from "react";
 import MaterialIcon from "react-native-vector-icons/MaterialCommunityIcons";
 import {
   HeaderButton,
@@ -27,14 +27,13 @@ const MaterialHeaderButton = (props: any) => (
 const HomeScreen = ({ route }: any): React.JSX.Element => {
   const navigation = useNavigation<any>();
   const dispatch = useAppDispatch();
-  const { profile, currentUser } = useAppSelector(selectAuthState);
+  const { profile, currentUser, shopStatus } = useAppSelector(selectAuthState);
+  const [images, setImages] = useState<any[]>([]);
 
   const fetchImg = async () => {
     const url = `http://192.168.1.100:3000/api/selectImg?target=${profile}`;
-
     const response = await axios.get(url);
-
-    console.log(response.data);
+    setImages(response.data); // Set images in state
   };
 
   const fetchProfile = async () => {
@@ -48,16 +47,10 @@ const HomeScreen = ({ route }: any): React.JSX.Element => {
   };
 
   useEffect(() => {
-    console.log(currentUser);    
-    //get user ID
-    //dispatch(setCurrentUser(route.params.userID[0].ID));
-    //console.log(route.params.userID[0].ID + 'route');
-    //console.log(currentUser + "user");
-
-    //fetchProfile();
-
-    //console.log(profile + " Homeprofile");
-  }, []);
+    if (!shopStatus) {
+      fetchImg(); // Fetch images if shopStatus is false
+    }
+  }, [shopStatus]); // Dependency array includes shopStatus
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -78,10 +71,19 @@ const HomeScreen = ({ route }: any): React.JSX.Element => {
       ),
     });
   });
-
+  const renderItem = ({ item }: { item: any }) => (
+    <View>
+      <Text>{item.name}</Text> {/* Adjust according to your data structure */}
+    </View>
+  );
   return (
     <View>
-      <Text>HomeScreen</Text>
+      <Text>ร้านค้า</Text>
+      <FlatList
+        data={images}
+        renderItem={renderItem}
+        keyExtractor={(item) => item.id.toString()} // Adjust based on your data
+      />
     </View>
   );
 };

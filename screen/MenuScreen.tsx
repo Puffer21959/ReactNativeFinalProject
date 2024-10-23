@@ -1,27 +1,41 @@
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import React, { useEffect, useState } from "react";
-import { useAppSelector } from "../redux-toolkit/hook";
+import { useAppSelector, useAppDispatch } from "../redux-toolkit/hook";
 import { selectAuthState } from "../auth/auth-slice";
+import { setProfile } from "../auth/auth-slice";
 import axios from "axios";
 
 const MenuScreen = ({ navigation, route }: any): React.JSX.Element => {
   const [image, setImage] = useState<string>(
     Image.resolveAssetSource(require("../assets/favicon.png")).uri
   );
+  const [userName, setUserName] = useState<string>("ชื่อ นามสกุล");
 
-  const { currentUser } = useAppSelector(selectAuthState);
+  const { currentUser, profile } = useAppSelector(selectAuthState);
+  const dispatch = useAppDispatch();
+
+  const fetchProfile = async () => {
+    const url = `http://192.168.1.100:3000/api/getProfile?currentUser=${currentUser}`;
+
+    const response = await axios.get(url);
+
+    dispatch(setProfile(response.data[0]));
+    setUserName(response.data[0].Name);
+
+    console.log(response.data[0]);
+  };
 
   const fetchImg = async () => {
     try {
       const url = `http://192.168.1.100:3000/api/selectImg?target=${
         currentUser + "Profile"
       }`;
-
       //console.log(currentUser);
 
       const res = await axios.get(url);
 
       if (res.data != "") {
+        //console.log("Image is: " + res.data[0].ImageData);
         setImage(res.data[0].ImageData);
       } else {
         console.log("no Img result");
@@ -46,8 +60,12 @@ const MenuScreen = ({ navigation, route }: any): React.JSX.Element => {
   }
 
   useEffect(() => {
-    fetchImg();
-    //console.log(image);
+    navigation.addListener("focus", () => {
+      fetchImg();
+      fetchProfile();
+      console.log(profile)
+    });
+    
   }, []);
 
   return (
@@ -55,7 +73,7 @@ const MenuScreen = ({ navigation, route }: any): React.JSX.Element => {
       <View style={styles.container1}>
         <View style={{ flexDirection: "row" }}>
           <Image source={{ uri: image }} style={styles.image} />
-          <Text style={styles.profileName}>ชื่อ นามสกุล</Text>
+          <Text style={styles.profileName}>{userName}</Text>
         </View>
 
         <Line />

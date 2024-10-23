@@ -91,6 +91,29 @@ app.put("/api/updateImg", (req, res) => {
   });
 });
 
+app.put("/api/setStatus", (req, res) => {
+  const ID = req.body.ID;
+
+  const sqlUpdate = "UPDATE MODEL SET IsOpen = !IsOpen WHERE ID = ?";
+
+  db.query(sqlUpdate, [ID], (err, results) => {
+    console.log(err);
+    console.log("Shop Open/Close");
+  });
+});
+
+app.put("/api/updateShop", (req, res) => {
+  const ID = req.body.ID;
+  const shopName = req.body.shopName;
+
+  const sqlUpdate = "UPDATE MODEL SET ShopName = ? WHERE ID = ?";
+
+  db.query(sqlUpdate, [shopName, ID], (err, results) => {
+    console.log(err);
+    console.log("ShopName Updated");
+  });
+});
+
 app.get("/api/choose", (req, res) => {
   const email = req.query.email;
   console.log("email : " + email);

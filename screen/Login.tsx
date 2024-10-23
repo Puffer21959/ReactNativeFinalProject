@@ -4,7 +4,7 @@ import {
   TextInput,
   TouchableOpacity,
   View,
-  Alert
+  Alert,
 } from "react-native";
 import React, { useState } from "react";
 import { styleLogin } from "../styles/styles";
@@ -12,13 +12,13 @@ import MaterialIcon from "react-native-vector-icons/MaterialCommunityIcons";
 import { useNavigation } from "@react-navigation/native";
 import axios from "axios";
 import { useAppDispatch } from "../redux-toolkit/hook";
-import { setCurrentUser } from "../auth/auth-slice";
+import { setCurrentUser, setProfile } from "../auth/auth-slice";
 
 const Login = (): React.JSX.Element => {
   const navigation = useNavigation<any>();
 
   const [page, setpage] = useState(1);
-  const [name, setName]= useState("");
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -40,21 +40,21 @@ const Login = (): React.JSX.Element => {
 
         navigation.navigate("Home");
       } else {
-        Alert.alert("Login failed","Incorrect email or password.");
+        Alert.alert("Login failed", "Incorrect email or password.");
       }
     } catch (error) {
       console.error(error);
-      Alert.alert("Connect fail","Error connecting to the server.");
+      Alert.alert("Connect fail", "Error connecting to the server.");
     }
   };
 
   function checkLogin() {
     if (email === "" && password === "") {
-      Alert.alert("Login failed","Please enter email and password");
+      Alert.alert("Login failed", "Please enter email and password");
     } else if (email === "") {
-      Alert.alert("Login failed","Please enter email");
+      Alert.alert("Login failed", "Please enter email");
     } else if (password === "") {
-      Alert.alert("Login failed","Please enter password");
+      Alert.alert("Login failed", "Please enter password");
     } else {
       fetchUser();
     }
