@@ -8,6 +8,7 @@ import {
   TextInput,
   FlatList,
   Alert,
+  ScrollView,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import * as ImagePicker from "expo-image-picker";
@@ -314,11 +315,9 @@ const UserStoreScreen = ({ navigation }): React.JSX.Element => {
   );
 
   useEffect(() => {
-    navigation.addListener("focus", () => {
-      fetchImg();
-      fetchItem();
-      //console.log(profile);
-    });
+    fetchImg();
+    fetchItem();
+    //console.log(profile);
   }, []);
 
   useEffect(() => {
@@ -391,6 +390,7 @@ const UserStoreScreen = ({ navigation }): React.JSX.Element => {
                   columnWrapperStyle={{ justifyContent: "space-between" }}
                   extraData={loading}
                   persistentScrollbar={true}
+                  overScrollMode="always"
                   contentContainerStyle={{
                     paddingHorizontal: 20,
                     paddingBottom: 20,

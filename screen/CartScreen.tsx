@@ -5,12 +5,20 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import React from "react";
+import React, { useEffect } from "react";
+import { useAppSelector } from "../redux-toolkit/hook";
+import { selectAuthState } from "../auth/auth-slice";
 
 //TODO: >List of item in cart
 //      >Payment Process
 
 const CartScreen = (): React.JSX.Element => {
+  const { cart } = useAppSelector(selectAuthState);
+
+  useEffect(() => {
+    //console.log(cart);
+  }, []);
+
   return (
     <>
       <View style={{ flex: 1 }}>

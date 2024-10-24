@@ -3,27 +3,23 @@ import type { PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "../redux-toolkit/store";
 
 interface AuthState {
-  isLoading: boolean;
   profile: any | null;
   IP: string | null;
   currentUser: string | null;
+  cart: any | null;
 }
 
 const initialState: AuthState = {
-  isLoading: false,
   profile: null,
   IP: null,
   currentUser: null,
+  cart: [],
 };
 
 export const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
-    setIsLoading(state, action: PayloadAction<any | null>) {
-      state.isLoading = action.payload;
-    },
-
     setProfile(state, action: PayloadAction<any | null>) {
       state.profile = action.payload;
     },
@@ -35,11 +31,14 @@ export const authSlice = createSlice({
     setCurrentUser(state, action: PayloadAction<any | null>) {
       state.currentUser = action.payload;
     },
+
+    setCart(state, action: PayloadAction<any | null>) {
+      state.cart.push(action.payload);
+    },
   },
 });
 
-export const { setIsLoading, setProfile, setIP, setCurrentUser } =
-  authSlice.actions;
+export const { setProfile, setIP, setCurrentUser, setCart } = authSlice.actions;
 
 export const selectAuthState = (state: RootState) => state.authState;
 
