@@ -15,7 +15,7 @@ import { useAppDispatch } from "../redux-toolkit/hook";
 import { setCurrentUser, setIP } from "../auth/auth-slice";
 
 const Login = (): React.JSX.Element => {
-  let IP = "192.168.1.165";
+  let IP = "192.168.1.100";
 
   const navigation = useNavigation<any>();
 
@@ -28,7 +28,6 @@ const Login = (): React.JSX.Element => {
   dispatch(setIP(IP));
 
   const fetchUser = async () => {
-
     const url = `http://192.168.1.100:3000/api/select?email=${email}&password=${password}`;
 
     try {

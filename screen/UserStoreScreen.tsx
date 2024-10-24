@@ -12,7 +12,7 @@ import {
 import React, { useEffect, useState } from "react";
 import * as ImagePicker from "expo-image-picker";
 import { useAppSelector, useAppDispatch } from "../redux-toolkit/hook";
-import { selectAuthState, setShopStatus } from "../auth/auth-slice";
+import { selectAuthState } from "../auth/auth-slice";
 import axios from "axios";
 import Axios from "axios";
 import MaterialIcon from "react-native-vector-icons/MaterialCommunityIcons";
@@ -89,21 +89,6 @@ const UserStoreScreen = ({ navigation }): React.JSX.Element => {
       });
       setStatus(!status);
       console.log("shop Toggle");
-      console.log(status)
-      dispatch(setShopStatus(status))
-    } catch (error) {
-      console.log(error);
-    }
-  };
-  const tryUpdateShop = async () => {
-    try {
-      await Axios.put("http://192.168.1.100:3000/api/setStatus", {
-        ID: currentUser,
-      });
-      const newStatus = !status; // New status after toggle
-      setStatus(newStatus);
-      dispatch(setShopStatus(newStatus)); // Dispatch new status to Redux
-      console.log("Shop status toggled to:", newStatus);
     } catch (error) {
       console.log(error);
     }

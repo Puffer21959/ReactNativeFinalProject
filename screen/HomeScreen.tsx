@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View,FlatList } from "react-native";
+import { StyleSheet, Text, View, FlatList, Image,TouchableOpacity } from "react-native";
 import React, { useEffect, useLayoutEffect, useState } from "react";
 import MaterialIcon from "react-native-vector-icons/MaterialCommunityIcons";
 import {
@@ -9,13 +9,10 @@ import {
 import { useNavigation } from "@react-navigation/native";
 import {
   selectAuthState,
-  setProfile,    
+  setProfile,
 } from "../auth/auth-slice";
 import { useAppDispatch, useAppSelector } from "../redux-toolkit/hook";
 import axios from "axios";
-
-//TODO: >Create shop list
-//      >make function that fetch both profile and image data
 
 const MaterialHeaderButton = (props: any) => (
   <HeaderButton IconComponent={MaterialIcon} iconSize={23} {...props} />
@@ -24,30 +21,36 @@ const MaterialHeaderButton = (props: any) => (
 const HomeScreen = ({ route }: any): React.JSX.Element => {
   const navigation = useNavigation<any>();
   const dispatch = useAppDispatch();
-  const { profile, currentUser, shopStatus } = useAppSelector(selectAuthState);
+  const { profile, currentUser, shopStatus, IP } = useAppSelector(selectAuthState);
   const [images, setImages] = useState<any[]>([]);
 
-  const fetchImg = async () => {
-    const url = `http://192.168.1.100:3000/api/selectImg?target=${profile}`;
+ /*  const fetchImg = async () => {
+    const url = `http://${IP}:3000/api/selectImg?target=${
+      currentUser + "Shop"
+    }`;
     const response = await axios.get(url);
     setImages(response.data); // Set images in state
   };
 
   const fetchProfile = async () => {
-    const url = `http://192.168.1.100:3000/api/getProfile?currentUser=${currentUser}`;
-
+    const url = `http://${IP}:3000/api/getProfile?currentUser=${currentUser}`;
     const response = await axios.get(url);
-
     dispatch(setProfile(response.data[0]));
-
-    //console.log(response.data[0]);
   };
-
+ */
   useEffect(() => {
-    if (!shopStatus) {
-      fetchImg(); // Fetch images if shopStatus is false
+    const fetchImg = async () => {
+      const url = `http://${IP}:3000/api/selectImg?target=${
+        currentUser + "Shop"
+      }`;
+      const response = await axios.get(url);
+      setImages(response.data); // Store in state
+    };
+  
+    if (shopStatus) {
+      fetchImg();
     }
-  }, [shopStatus]); // Dependency array includes shopStatus
+  }, [shopStatus]);
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -68,23 +71,66 @@ const HomeScreen = ({ route }: any): React.JSX.Element => {
       ),
     });
   });
+
   const renderItem = ({ item }: { item: any }) => (
-    <View>
-      <Text>{item.name}</Text> {/* Adjust according to your data structure */}
+    <View style={styles.itemContainer}>
+      <TouchableOpacity onPress={checkOpen} >
+       <Image
+        source={{ uri: `http://${IP}:3000/api/selectImg?target=${
+      currentUser + "Shop"
+    }` }}
+        style={styles.image}
+      />
+        <Text style={styles.text}>Press Me!</Text>
+      </TouchableOpacity>
     </View>
   );
+
+  function checkOpen(){
+
+  }
   return (
-    <View>
-      <Text>ร้านค้า</Text>
+    <View style={styles.container}>
+      <Text style={styles.Title}>ร้านค้า</Text>
       <FlatList
         data={images}
         renderItem={renderItem}
         keyExtractor={(item) => item.id.toString()} // Adjust based on your data
       />
+       <TouchableOpacity onPress={checkOpen} >
+       <Image
+        source={{ uri: `http://${IP}:3000/api/selectImg?target=${
+      currentUser + "Shop"
+    }` }}
+        style={styles.image}
+      />
+        <Text style={styles.text}>Press Me!</Text>
+      </TouchableOpacity>
     </View>
   );
 };
 
 export default HomeScreen;
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  container: {
+    padding: 3.5,
+  },
+  Title: {
+    padding: 2.5,
+    fontSize: 30,
+    fontWeight: "700",
+  },
+  text:{
+    fontSize: 20,
+  },
+  itemContainer: {
+    marginBottom: 10, // Space between items
+    alignItems: "center", // Center items
+  },
+  image: {
+    width: 100, // Set width as needed
+    height: 100, // Set height as needed
+    borderRadius: 10, // Optional: round corners
+  },
+});
