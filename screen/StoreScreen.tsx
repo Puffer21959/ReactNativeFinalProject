@@ -59,7 +59,7 @@ const StoreScreen = ({ navigation, route }): React.JSX.Element => {
 
     setStoreData(response.data[0]);
 
-    console.log(response.data[0] + "TEST");
+    //console.log(response.data[0] + "TEST");
   };
 
   const fetchItem = async () => {
