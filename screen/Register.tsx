@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { styleRegister } from "../styles/styles";
 import MaterialIcon from "react-native-vector-icons/MaterialCommunityIcons";
-import axios, { Axios } from "axios";
+import axios from "axios";
 
 const Register = (): React.JSX.Element => {
   const navigation = useNavigation<any>();

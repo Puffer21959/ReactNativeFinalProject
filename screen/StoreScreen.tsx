@@ -16,7 +16,7 @@ import { selectAuthState, setCart } from "../auth/auth-slice";
 const StoreScreen = ({ navigation, route }): React.JSX.Element => {
   let tempID = "1729602335364";
 
-  const { IP, cart, profile } = useAppSelector(selectAuthState);
+  const { IP } = useAppSelector(selectAuthState);
   const dispatch = useAppDispatch();
 
   const [image, setImage] = useState<string>(
@@ -27,7 +27,6 @@ const StoreScreen = ({ navigation, route }): React.JSX.Element => {
   const [target, setTarget] = useState<any>({});
   const [loading, setLoading] = useState<boolean>(false);
   const [items, setItems] = useState<any>({});
-  const [cartData, setCartData] = useState<any>(cart);
 
   let [amount, setAmount] = useState<number>(0);
 
@@ -59,7 +58,7 @@ const StoreScreen = ({ navigation, route }): React.JSX.Element => {
 
     setStoreData(response.data[0]);
 
-    console.log(response.data[0]);
+    //console.log(response.data[0]);
   };
 
   const fetchItem = async () => {
@@ -87,11 +86,18 @@ const StoreScreen = ({ navigation, route }): React.JSX.Element => {
     setModalVisible(true);
   };
 
-  const addToCart = (data: object, amount: number) => {
+  const addToCart = (data: object) => {
+    if (amount === 0) {
+      setModalVisible(!modalVisible);
+      return;
+    }
+
     data["amount"] = amount;
+    data["ID"] = tempID;
 
     dispatch(setCart(data));
 
+    setAmount(0);
     setModalVisible(!modalVisible);
   };
 
@@ -122,7 +128,6 @@ const StoreScreen = ({ navigation, route }): React.JSX.Element => {
     fetchData();
     fetchItem();
     console.log("fetch");
-    //console.log(cart);
   }, []);
 
   return (
@@ -222,7 +227,10 @@ const StoreScreen = ({ navigation, route }): React.JSX.Element => {
                 }}
               >
                 <TouchableOpacity
-                  onPress={() => setModalVisible(!modalVisible)}
+                  onPress={() => {
+                    setModalVisible(!modalVisible);
+                    setAmount(0);
+                  }}
                 >
                   <Text style={{ top: "25%", color: "#4F6C8B" }}>
                     <MaterialIcon name="keyboard-backspace" size={12} />
@@ -231,7 +239,7 @@ const StoreScreen = ({ navigation, route }): React.JSX.Element => {
                 </TouchableOpacity>
                 <TouchableOpacity
                   style={styles.confirmButton}
-                  onPress={() => addToCart(target, amount)}
+                  onPress={() => addToCart(target)}
                 >
                   <Text style={{ fontWeight: "bold", color: "white" }}>
                     ตกลง
