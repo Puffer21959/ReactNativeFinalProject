@@ -14,7 +14,8 @@ import { useAppDispatch, useAppSelector } from "../redux-toolkit/hook";
 import { selectAuthState, setCart } from "../auth/auth-slice";
 
 const StoreScreen = ({ navigation, route }): React.JSX.Element => {
-  let tempID = "1729602335364";
+  //let tempID = "1729602335364";
+  let tempID = route.params;
 
   const { IP } = useAppSelector(selectAuthState);
   const dispatch = useAppDispatch();
@@ -58,7 +59,7 @@ const StoreScreen = ({ navigation, route }): React.JSX.Element => {
 
     setStoreData(response.data[0]);
 
-    //console.log(response.data[0]);
+    console.log(response.data[0] + "TEST");
   };
 
   const fetchItem = async () => {
@@ -130,6 +131,7 @@ const StoreScreen = ({ navigation, route }): React.JSX.Element => {
     fetchData();
     fetchItem();
     console.log("fetch");
+    console.log(route.params)
   }, []);
 
   return (
