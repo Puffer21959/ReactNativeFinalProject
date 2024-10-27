@@ -35,10 +35,15 @@ export const authSlice = createSlice({
     setCart(state, action: PayloadAction<any | null>) {
       state.cart.push(action.payload);
     },
+
+    resetCart(state, action: PayloadAction<any | null>) {
+      state.cart = action.payload;
+    },
   },
 });
 
-export const { setProfile, setIP, setCurrentUser, setCart } = authSlice.actions;
+export const { setProfile, setIP, setCurrentUser, setCart, resetCart } =
+  authSlice.actions;
 
 export const selectAuthState = (state: RootState) => state.authState;
 

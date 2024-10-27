@@ -8,18 +8,14 @@ import {
   TextInput,
   FlatList,
   Alert,
-  ScrollView,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import * as ImagePicker from "expo-image-picker";
-import { useAppSelector, useAppDispatch } from "../redux-toolkit/hook";
+import { useAppSelector } from "../redux-toolkit/hook";
 import { selectAuthState } from "../auth/auth-slice";
 import axios from "axios";
 import Axios from "axios";
 import MaterialIcon from "react-native-vector-icons/MaterialCommunityIcons";
-
-//TODO: >Add Flatlist that can click to add item
-//      >Connect to Database
 
 const UserStoreScreen = ({ navigation }): React.JSX.Element => {
   const { currentUser, profile, IP } = useAppSelector(selectAuthState);
@@ -389,8 +385,6 @@ const UserStoreScreen = ({ navigation }): React.JSX.Element => {
                   numColumns={2}
                   columnWrapperStyle={{ justifyContent: "space-between" }}
                   extraData={loading}
-                  persistentScrollbar={true}
-                  overScrollMode="always"
                   contentContainerStyle={{
                     paddingHorizontal: 20,
                     paddingBottom: 20,
