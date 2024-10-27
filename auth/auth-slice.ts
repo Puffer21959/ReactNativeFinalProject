@@ -6,6 +6,7 @@ interface AuthState {
   profile: any | null;
   IP: string | null;
   currentUser: string | null;
+  shopStatus: boolean;
   cart: any | null;
 }
 
@@ -13,6 +14,7 @@ const initialState: AuthState = {
   profile: null,
   IP: null,
   currentUser: null,
+  shopStatus: false,
   cart: [],
 };
 
@@ -31,7 +33,9 @@ export const authSlice = createSlice({
     setCurrentUser(state, action: PayloadAction<any | null>) {
       state.currentUser = action.payload;
     },
-
+    setShopStatus(state, action: PayloadAction<any | null>) { 
+      state.shopStatus = action.payload;
+    },
     setCart(state, action: PayloadAction<any | null>) {
       state.cart.push(action.payload);
     },
@@ -42,7 +46,7 @@ export const authSlice = createSlice({
   },
 });
 
-export const { setProfile, setIP, setCurrentUser, setCart, resetCart } =
+export const { setProfile, setIP, setCurrentUser, setShopStatus, setCart, resetCart } =
   authSlice.actions;
 
 export const selectAuthState = (state: RootState) => state.authState;

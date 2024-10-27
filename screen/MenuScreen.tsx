@@ -22,7 +22,7 @@ const MenuScreen = ({ navigation, route }: any): React.JSX.Element => {
     dispatch(setProfile(response.data[0]));
     setUserName(response.data[0].Name);
 
-    //console.log(response.data[0]);
+    console.log(response.data[0]);
   };
 
   const fetchImg = async () => {
@@ -65,7 +65,7 @@ const MenuScreen = ({ navigation, route }: any): React.JSX.Element => {
       fetchProfile();
       //console.log(profile + " focus");
     });
-    //console.log(image);
+    
   }, []);
 
   return (

@@ -182,6 +182,22 @@ app.get("/api/choose", (req, res) => {
     }
   });
 });
+app.get("/api/checkOpen",(req,res)=>{
+const IsOpen = req.query.IsOpen
+const ID = req.query.ID
+const sqlStatement = "SELECT * from Model Where IsOpen = 1 and ID != ID"
+db.query(sqlStatement,[ID],(err,result)=>{
+  if(err){
+    console.error("Database error:", err);
+    return res.status(500).send(false); // Respond with false on error
+  }
+  if (result.length != 0) {
+    return res.send(result);
+  } else {
+    return res.send(null);
+  }
+})
+});
 
 /* app.put("/api/update",(req,res)=>{
     const Email = req.body.Email

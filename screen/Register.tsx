@@ -15,7 +15,7 @@ const Register = (): React.JSX.Element => {
   const [confirm, setConfirm] = useState("");
 
   const fetchUser = async () => {
-    const url = `http://192.168.1.165:3000/api/choose?email=${email}`;
+    const url = `http://192.168.1.100:3000/api/choose?email=${email}`;
     try {
       const response = await axios.get(url);
       console.log("Fetch User Response:", response.data);
@@ -28,7 +28,7 @@ const Register = (): React.JSX.Element => {
       } else {
         alert("Register Complete");
         navigation.navigate("Login");
-        await axios.post("http://192.168.1.165:3000/api/insert", {
+        await axios.post("http://192.168.1.100:3000/api/insert", {
           ID: Date.now().toString(),
           Email: email,
           Name: name,

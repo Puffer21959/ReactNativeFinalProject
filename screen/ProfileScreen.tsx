@@ -97,10 +97,10 @@ const ProfileScreen = ({ navigation }): React.JSX.Element => {
           </View>
 
           {/*profile.name */}
-          <Text style={styles.text}>{profile.Name}</Text>
+          {/* <Text style={styles.text}>{profile.Name}</Text> */}
 
           {/*profile.email */}
-          <Text style={styles.text}>{profile.Email}</Text>
+          {/* <Text style={styles.text}>{profile.Email}</Text> */}
 
           <TouchableOpacity style={styles.passButton}>
             <Text style={[styles.text, { color: "white" }]}>
