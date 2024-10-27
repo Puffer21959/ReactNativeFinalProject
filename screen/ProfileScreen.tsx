@@ -34,6 +34,7 @@ const ProfileScreen = ({ navigation }): React.JSX.Element => {
         //console.log(image);
       } else {
         console.log("no Image result");
+        console.log(res.data);
       }
     } catch (error) {
       console.log(error);
@@ -79,9 +80,8 @@ const ProfileScreen = ({ navigation }): React.JSX.Element => {
   };
 
   useEffect(() => {
-    navigation.addListener("focus", () => {
-      fetchImg();
-    });
+    fetchImg();
+    console.log(currentUser);
 
     //console.log(image);
   }, []);

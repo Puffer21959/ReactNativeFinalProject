@@ -10,13 +10,14 @@ import {
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import MaterialIcon from "react-native-vector-icons/MaterialCommunityIcons";
-import { useAppSelector } from "../redux-toolkit/hook";
-import { selectAuthState } from "../auth/auth-slice";
+import { useAppDispatch, useAppSelector } from "../redux-toolkit/hook";
+import { selectAuthState, setCart } from "../auth/auth-slice";
 
 const StoreScreen = ({ navigation, route }): React.JSX.Element => {
   let tempID = "1729602335364";
 
-  const { IP } = useAppSelector(selectAuthState);
+  const { IP, cart, profile } = useAppSelector(selectAuthState);
+  const dispatch = useAppDispatch();
 
   const [image, setImage] = useState<string>(
     Image.resolveAssetSource(require("../assets/favicon.png")).uri
@@ -26,6 +27,9 @@ const StoreScreen = ({ navigation, route }): React.JSX.Element => {
   const [target, setTarget] = useState<any>({});
   const [loading, setLoading] = useState<boolean>(false);
   const [items, setItems] = useState<any>({});
+  const [cartData, setCartData] = useState<any>(cart);
+
+  let [amount, setAmount] = useState<number>(0);
 
   const fetchImg = async () => {
     try {
@@ -83,6 +87,14 @@ const StoreScreen = ({ navigation, route }): React.JSX.Element => {
     setModalVisible(true);
   };
 
+  const addToCart = (data: object, amount: number) => {
+    data["amount"] = amount;
+
+    dispatch(setCart(data));
+
+    setModalVisible(!modalVisible);
+  };
+
   const _renderItem = ({ item, index }) => (
     <>
       <View style={{ flexDirection: "row" }}>
@@ -98,7 +110,7 @@ const StoreScreen = ({ navigation, route }): React.JSX.Element => {
           <View
             style={{ flexDirection: "row", justifyContent: "space-between" }}
           >
-            <Text style={{}}>ราคา {item.Price} บาท</Text>
+            <Text>ราคา {item.Price} บาท</Text>
           </View>
         </TouchableOpacity>
       </View>
@@ -106,12 +118,11 @@ const StoreScreen = ({ navigation, route }): React.JSX.Element => {
   );
 
   useEffect(() => {
-    navigation.addListener("focus", () => {
-      fetchImg();
-      fetchData();
-      fetchItem();
-      console.log("fetch");
-    });
+    fetchImg();
+    fetchData();
+    fetchItem();
+    console.log("fetch");
+    //console.log(cart);
   }, []);
 
   return (
@@ -176,15 +187,58 @@ const StoreScreen = ({ navigation, route }): React.JSX.Element => {
       >
         <View style={{ backgroundColor: "#00000046", flex: 1 }}>
           <View style={styles.modalView}>
-            <View>
-              <Text>{target.ItemName}</Text>
+            <View style={{ width: 250 }}>
+              <View
+                style={{
+                  alignItems: "center",
+                }}
+              >
+                <Text style={{ fontWeight: "bold", fontSize: 22 }}>
+                  จำนวนที่ใส่ตะกร้า
+                </Text>
+                <View
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    marginVertical: 10,
+                  }}
+                >
+                  <TouchableOpacity
+                    onPress={() => (amount === 0 ? {} : setAmount(amount - 1))}
+                  >
+                    <MaterialIcon name="minus-circle" size={22} />
+                  </TouchableOpacity>
+                  <Text style={{ marginHorizontal: 10 }}>{amount}</Text>
+                  <TouchableOpacity onPress={() => setAmount(amount + 1)}>
+                    <MaterialIcon name="plus-circle" size={22} />
+                  </TouchableOpacity>
+                </View>
+              </View>
+
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                }}
+              >
+                <TouchableOpacity
+                  onPress={() => setModalVisible(!modalVisible)}
+                >
+                  <Text style={{ top: "25%", color: "#4F6C8B" }}>
+                    <MaterialIcon name="keyboard-backspace" size={12} />
+                    ย้อนกลับ
+                  </Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.confirmButton}
+                  onPress={() => addToCart(target, amount)}
+                >
+                  <Text style={{ fontWeight: "bold", color: "white" }}>
+                    ตกลง
+                  </Text>
+                </TouchableOpacity>
+              </View>
             </View>
-            <TouchableOpacity onPress={() => setModalVisible(!modalVisible)}>
-              <Text style={{ top: "25%", color: "#4F6C8B" }}>
-                <MaterialIcon name="keyboard-backspace" size={12} />
-                ย้อนกลับ
-              </Text>
-            </TouchableOpacity>
           </View>
         </View>
       </Modal>
@@ -256,5 +310,11 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 5,
     top: "15%",
+  },
+
+  confirmButton: {
+    padding: 10,
+    backgroundColor: "#4177BEFF",
+    borderRadius: 15,
   },
 });

@@ -11,7 +11,7 @@ const MenuScreen = ({ navigation, route }: any): React.JSX.Element => {
   );
   const [userName, setUserName] = useState<string>("ชื่อ นามสกุล");
 
-  const { currentUser, profile, IP } = useAppSelector(selectAuthState);
+  const { currentUser, IP } = useAppSelector(selectAuthState);
   const dispatch = useAppDispatch();
 
   const fetchProfile = async () => {
@@ -63,8 +63,6 @@ const MenuScreen = ({ navigation, route }: any): React.JSX.Element => {
     navigation.addListener("focus", () => {
       fetchImg();
       fetchProfile();
-      console.log(profile)
-      //console.log(IP);
       //console.log(profile + " focus");
     });
     

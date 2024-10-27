@@ -13,6 +13,7 @@ import {
 } from "../auth/auth-slice";
 import { useAppDispatch, useAppSelector } from "../redux-toolkit/hook";
 import axios from "axios";
+import UserStoreScreen from "./UserStoreScreen";
 
 const MaterialHeaderButton = (props: any) => (
   <HeaderButton IconComponent={MaterialIcon} iconSize={23} {...props} />
@@ -21,7 +22,7 @@ const MaterialHeaderButton = (props: any) => (
 const HomeScreen = ({ route }: any): React.JSX.Element => {
   const navigation = useNavigation<any>();
   const dispatch = useAppDispatch();
-  const { profile, currentUser, shopStatus, IP } = useAppSelector(selectAuthState);
+  const { profile, currentUser, IP } = useAppSelector(selectAuthState);
   const [images, setImages] = useState<any[]>([]);
 
  /*  const fetchImg = async () => {
@@ -39,18 +40,27 @@ const HomeScreen = ({ route }: any): React.JSX.Element => {
   };
  */
   useEffect(() => {
-    const fetchImg = async () => {
-      const url = `http://${IP}:3000/api/selectImg?target=${
-        currentUser + "Shop"
-      }`;
-      const response = await axios.get(url);
-      setImages(response.data); // Store in state
-    };
-  
-    if (shopStatus) {
-      fetchImg();
+    const fetchShop = async () =>{
+    try {
+      const url =`http://${IP}:3000/api/checkOpen`
+      const response = await fetch(url);
+      const data = await response.json(); // Assuming the response is in JSON format
+      if(data.IsOpen===1){
+        const targetUrl = `http://${IP}:3000/api/selectImg?target=${
+      currentUser + "Shop"
+    }`;
+        const imgResponse = await axios.get(targetUrl);
+        console.log(imgResponse.data); // Handle the image data as needed
+        setImages(imgResponse.data);
+      } else {
+        console.log('Shop is closed');
+      }
+    } catch (error) {
+      console.log(error)
     }
-  }, [shopStatus]);
+    }
+      fetchShop()
+  }, []);
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -74,21 +84,31 @@ const HomeScreen = ({ route }: any): React.JSX.Element => {
 
   const renderItem = ({ item }: { item: any }) => (
     <View style={styles.itemContainer}>
-      <TouchableOpacity onPress={checkOpen} >
+      {/* <TouchableOpacity onPress={checkOpen} >
        <Image
         source={{ uri: `http://${IP}:3000/api/selectImg?target=${
       currentUser + "Shop"
     }` }}
         style={styles.image}
       />
-        <Text style={styles.text}>Press Me!</Text>
-      </TouchableOpacity>
+        <Text style={styles.text}>Press</Text>
+      </TouchableOpacity> */}
     </View>
   );
 
-  function checkOpen(){
+  /* function checkOpen(){
 
-  }
+    <TouchableOpacity onPress={checkOpen} >
+    <Image
+     source={{ uri: `http://${IP}:3000/api/selectImg?target=${
+   currentUser + "Shop"
+ }` }}
+     style={styles.image}
+   />
+     <Text style={styles.text}>Press</Text>
+   </TouchableOpacity>
+
+} */
   return (
     <View style={styles.container}>
       <Text style={styles.Title}>ร้านค้า</Text>
@@ -97,15 +117,14 @@ const HomeScreen = ({ route }: any): React.JSX.Element => {
         renderItem={renderItem}
         keyExtractor={(item) => item.id.toString()} // Adjust based on your data
       />
-       <TouchableOpacity onPress={checkOpen} >
+     {/*   <TouchableOpacity onPress={checkOpen} >
        <Image
         source={{ uri: `http://${IP}:3000/api/selectImg?target=${
-      currentUser + "Shop"
-    }` }}
+      currentUser}` }}
         style={styles.image}
       />
         <Text style={styles.text}>Press Me!</Text>
-      </TouchableOpacity>
+      </TouchableOpacity> */}
     </View>
   );
 };
