@@ -1,6 +1,7 @@
 import {
   FlatList,
   Image,
+  Modal,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -8,8 +9,9 @@ import {
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../redux-toolkit/hook";
-import { resetCart, selectAuthState, setCart } from "../auth/auth-slice";
+import { resetCart, selectAuthState } from "../auth/auth-slice";
 import MaterialIcon from "react-native-vector-icons/MaterialCommunityIcons";
+import DropDownPicker from "react-native-dropdown-picker";
 
 //TODO: >List of item in cart
 //      >Payment Process
@@ -17,6 +19,13 @@ import MaterialIcon from "react-native-vector-icons/MaterialCommunityIcons";
 const CartScreen = (): React.JSX.Element => {
   const { cart } = useAppSelector(selectAuthState);
   const [list, setList] = useState([]);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [dropItem, setDropItem] = useState([
+    { label: "Visa", value: "visa" },
+    { label: "MasterCard", value: "mastercard" },
+  ]);
+  const [dropOpen, setDropOpen] = useState(false);
+  const [value, setValue] = useState(null);
 
   const dispatch = useAppDispatch();
 
@@ -46,10 +55,7 @@ const CartScreen = (): React.JSX.Element => {
 
   const _renderItem = ({ item, index }) => (
     <>
-      <View
-        style={{ marginVertical: 10 }}
-        key={item.ID}
-      >
+      <View style={{ marginVertical: 10 }} key={item.ID}>
         <View style={{ flexDirection: "row" }}>
           <Image
             style={styles.listImage}
@@ -100,7 +106,7 @@ const CartScreen = (): React.JSX.Element => {
 
           <TouchableOpacity
             style={{ flex: 1 }}
-            onPress={() => console.log("Go to Payment")}
+            onPress={() => setModalVisible(!modalVisible)}
           >
             <View style={[styles.footerBox, { backgroundColor: "#4177BEFF" }]}>
               <Text style={[styles.footerText, { color: "white" }]}>
@@ -110,6 +116,59 @@ const CartScreen = (): React.JSX.Element => {
           </TouchableOpacity>
         </View>
       </View>
+      <Modal
+        visible={modalVisible}
+        transparent={true}
+        animationType="slide"
+        onRequestClose={() => setModalVisible(!modalVisible)}
+      >
+        <>
+          <View style={{ backgroundColor: "#00000046", flex: 1 }}>
+            <View style={styles.modalView}>
+              <View style={{ width: 250 }}>
+                <View style={{ rowGap: 5, paddingVertical: 10 }}>
+                  <Text>เลือกวิธีชำระเงิน</Text>
+
+                  <DropDownPicker
+                    open={dropOpen}
+                    items={dropItem}
+                    value={value}
+                    setOpen={setDropOpen}
+                    setValue={setValue}
+                    setItems={setDropItem}
+                    placeholder="เลือกวิธีชำระเงิน"
+                  />
+                </View>
+                <View
+                  style={{
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                  }}
+                >
+                  <TouchableOpacity
+                    onPress={() => {
+                      setModalVisible(!modalVisible);
+                    }}
+                  >
+                    <Text style={{ top: "25%", color: "#4F6C8B" }}>
+                      <MaterialIcon name="keyboard-backspace" size={12} />
+                      ย้อนกลับ
+                    </Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={styles.confirmButton}
+                    onPress={() => setModalVisible(!modalVisible)}
+                  >
+                    <Text style={{ fontWeight: "bold", color: "white" }}>
+                      ตกลง
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+            </View>
+          </View>
+        </>
+      </Modal>
     </>
   );
 };
@@ -144,5 +203,28 @@ const styles = StyleSheet.create({
     width: 150,
     overflow: "hidden",
     backgroundColor: "gray",
+  },
+
+  modalView: {
+    margin: 20,
+    backgroundColor: "white",
+    borderRadius: 8,
+    padding: 35,
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+    top: "15%",
+  },
+
+  confirmButton: {
+    padding: 10,
+    backgroundColor: "#4177BEFF",
+    borderRadius: 15,
   },
 });

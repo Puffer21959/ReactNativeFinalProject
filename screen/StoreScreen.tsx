@@ -96,6 +96,8 @@ const StoreScreen = ({ navigation, route }): React.JSX.Element => {
     data["amount"] = amount;
     data["ID"] = tempID;
 
+    console.log(data);
+
     dispatch(setCart(data));
 
     setAmount(0);

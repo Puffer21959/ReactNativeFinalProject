@@ -163,6 +163,43 @@ app.put("/api/deleteItem", (req, res) => {
   });
 });
 
+app.put("/api/updatePass", (req, res) => {
+  const oldPass = req.body.oldPass;
+  const newPass = req.body.newPass;
+  const ID = req.body.ID;
+
+  const sqlUpdate =
+    "UPDATE MODEL SET Password = ? WHERE Password = ? AND ID = ?";
+
+  db.query(sqlUpdate, [newPass, oldPass, ID], (err, results) => {
+    console.log(err);
+    console.log("Password Changed");
+  });
+});
+
+app.put("/api/deleteAccount", (req, res) => {
+  const ID = req.body.ID;
+
+  const AccDelete = "DELETE FROM MODEL WHERE ID = ?";
+  const ImgDelete = "DELETE FROM IMAGE WHERE ID = ?";
+  const ItemDelete = "DELETE FROM ITEM WHERE ID = ?";
+
+  db.query(AccDelete, [ID], (err, results) => {
+    console.log(err);
+    console.log("Account Deleted");
+  });
+
+  db.query(ImgDelete, [ID], (err, results) => {
+    console.log(err);
+    console.log("Img Deleted");
+  });
+
+  db.query(ItemDelete, [ID], (err, results) => {
+    console.log(err);
+    console.log("Item Deleted");
+  });
+});
+
 app.get("/api/choose", (req, res) => {
   const email = req.query.email;
   console.log("email : " + email);
@@ -182,6 +219,7 @@ app.get("/api/choose", (req, res) => {
     }
   });
 });
+
 app.get("/api/checkOpen", (req, res) => {
   const IsOpen = req.query.IsOpen; // Assuming this is either '1' or '0'
   const ID = req.query.ID;
@@ -198,6 +236,7 @@ app.get("/api/checkOpen", (req, res) => {
       } else {
         return res.send("failed");
       }
+    
   });
 });
 
