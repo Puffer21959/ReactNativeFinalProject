@@ -51,27 +51,43 @@ export default function App(): React.JSX.Element {
             <HomeStack.Screen
               name="Home"
               component={HomeStackScreen}
-              options={{ headerBackVisible: false, headerShown: false }}
+              options={{
+                headerBackVisible: false,
+                headerShown: false,
+              }}
             />
             <HomeStack.Screen
               name="Profile"
               component={ProfileScreen}
-              options={{ title: "" }}
+              options={{
+                title: "",
+                headerStyle: { backgroundColor: "#4F6C8B" },
+              }}
             />
             <HomeStack.Screen
               name="UserStore"
               component={UserStoreScreen}
-              options={{ title: "" }}
+              options={{
+                title: "",
+                headerStyle: { backgroundColor: "#4F6C8B" },
+              }}
             />
             <HomeStack.Screen
               name="Cart"
               component={CartScreen}
-              options={{ title: "รถเข็น" }}
+              options={{
+                title: "รถเข็น",
+                headerTitleStyle: { color: "white" },
+                headerStyle: { backgroundColor: "#4F6C8B" },
+              }}
             />
             <HomeStack.Screen
               name="Store"
               component={StoreScreen}
-              options={{ title: "" }}
+              options={{
+                title: "",
+                headerStyle: { backgroundColor: "#4F6C8B" },
+              }}
             />
           </HomeStack.Navigator>
         </NavigationContainer>

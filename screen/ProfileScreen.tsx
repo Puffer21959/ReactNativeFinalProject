@@ -1,6 +1,16 @@
-import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import {
+  Image,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+  Modal,
+  TextInput,
+  Alert,
+} from "react-native";
 import React, { useEffect, useState } from "react";
 import * as ImagePicker from "expo-image-picker";
+import MaterialIcon from "react-native-vector-icons/MaterialCommunityIcons";
 
 import { selectAuthState } from "../auth/auth-slice";
 import { useAppSelector } from "../redux-toolkit/hook";
@@ -13,9 +23,12 @@ const ProfileScreen = ({ navigation }): React.JSX.Element => {
   const [image, setImage] = useState<string>(
     Image.resolveAssetSource(require("../assets/favicon.png")).uri
   );
-  const [fetchResult, setResult] = useState(false);
+  const [fetchResult, setResult] = useState<boolean>(false);
+  const [modalVisible, setModalVisible] = useState<boolean>(false);
+  const [textInput, setTextInput] = useState<string>("");
 
   const { currentUser, profile, IP } = useAppSelector(selectAuthState);
+  const [currentPass, setCurrentPass] = useState<string>(profile.Password);
 
   const fetchImg = async () => {
     try {
@@ -36,6 +49,36 @@ const ProfileScreen = ({ navigation }): React.JSX.Element => {
         console.log("no Image result");
         console.log(res.data);
       }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const changePass = () => {
+    try {
+      Axios.put(`http://${IP}:3000/api/updatePass`, {
+        oldPass: currentPass,
+        newPass: textInput,
+        ID: currentUser,
+      });
+
+      setCurrentPass(textInput);
+      setTextInput("");
+      setModalVisible(!modalVisible);
+      Alert.alert("เปลี่ยนรหัสผ่านเรียบร้อยแล้ว");
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const deleteAcc = () => {
+    try {
+      Axios.put(`http://${IP}:3000/api/deleteAccount`, {
+        ID: currentUser,
+      });
+
+      navigation.navigate("Login");
+      Alert.alert("บัญชีถูกลบแล้ว");
     } catch (error) {
       console.log(error);
     }
@@ -97,27 +140,87 @@ const ProfileScreen = ({ navigation }): React.JSX.Element => {
           </View>
 
           {/*profile.name */}
-          {/* <Text style={styles.text}>{profile.Name}</Text> */}
+          <Text style={styles.text}>{profile.Name}</Text>
 
           {/*profile.email */}
-          {/* <Text style={styles.text}>{profile.Email}</Text> */}
+          <Text style={styles.text}>{profile.Email}</Text>
 
-          <TouchableOpacity style={styles.passButton}>
-            <Text style={[styles.text, { color: "white" }]}>
+          <TouchableOpacity
+            style={styles.passButton}
+            onPress={() => setModalVisible(!modalVisible)}
+          >
+            <Text style={[styles.text, { color: "#3F62D6FF" }]}>
               แก้ไข Password
             </Text>
           </TouchableOpacity>
 
           <TouchableOpacity
-            style={[styles.passButton, { backgroundColor: "#D12121FF" }]}
+            style={[
+              styles.passButton,
+              {
+                backgroundColor: "white",
+                borderWidth: 2,
+                borderColor: "#D12121FF",
+              },
+            ]}
+            onPress={() => deleteAcc()}
           >
-            <Text style={[styles.text, { color: "white" }]}>ลบบัญชี</Text>
+            <Text style={[styles.text, { color: "#D12121FF" }]}>ลบบัญชี</Text>
           </TouchableOpacity>
           <TouchableOpacity onPress={() => navigation.navigate("Store")}>
             <Text>test</Text>
           </TouchableOpacity>
         </View>
       </View>
+      <Modal
+        visible={modalVisible}
+        transparent={true}
+        animationType="slide"
+        onRequestClose={() => setModalVisible(!modalVisible)}
+      >
+        <>
+          <View style={{ backgroundColor: "#00000046", flex: 1 }}>
+            <View style={styles.modalView}>
+              <View style={{ width: 250 }}>
+                <View style={{ rowGap: 5, paddingVertical: 10 }}>
+                  <Text>กรอกรหัสผ่านใหม่</Text>
+                  <TextInput
+                    style={styles.input}
+                    value={textInput}
+                    onChangeText={setTextInput}
+                    placeholder="รหัสผ่านใหม่"
+                  />
+                </View>
+                <View
+                  style={{
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                  }}
+                >
+                  <TouchableOpacity
+                    onPress={() => {
+                      setModalVisible(!modalVisible);
+                    }}
+                  >
+                    <Text style={{ top: "25%", color: "#4F6C8B" }}>
+                      <MaterialIcon name="keyboard-backspace" size={12} />
+                      ย้อนกลับ
+                    </Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={styles.confirmButton}
+                    onPress={() => changePass()}
+                  >
+                    <Text style={{ fontWeight: "bold", color: "white" }}>
+                      ตกลง
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+            </View>
+          </View>
+        </>
+      </Modal>
     </>
   );
 };
@@ -127,13 +230,14 @@ export default ProfileScreen;
 const styles = StyleSheet.create({
   container1: {
     flex: 1,
-    backgroundColor: "gray",
+    backgroundColor: "#4F6C8B",
+    //backgroundColor: "#3F62D6FF",
     padding: 35,
   },
 
   container2: {
     backgroundColor: "white",
-    borderRadius: 50,
+    borderRadius: 30,
     padding: 20,
     flex: 1,
     rowGap: 25,
@@ -154,9 +258,44 @@ const styles = StyleSheet.create({
   },
 
   passButton: {
-    backgroundColor: "#3F62D6FF",
+    backgroundColor: "white",
     borderRadius: 15,
     alignSelf: "center",
     padding: 5,
+    borderWidth: 2,
+    borderColor: "#3F62D6FF",
+  },
+
+  modalView: {
+    margin: 20,
+    backgroundColor: "white",
+    borderRadius: 8,
+    padding: 35,
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+    top: "15%",
+  },
+
+  confirmButton: {
+    padding: 10,
+    backgroundColor: "#4177BEFF",
+    borderRadius: 15,
+  },
+
+  input: {
+    borderColor: "#333",
+    borderWidth: 1,
+    padding: 10,
+    marginBottom: 20,
+    borderRadius: 10,
+    backgroundColor: "#fff",
+    width: 250,
   },
 });

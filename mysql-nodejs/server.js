@@ -163,6 +163,43 @@ app.put("/api/deleteItem", (req, res) => {
   });
 });
 
+app.put("/api/updatePass", (req, res) => {
+  const oldPass = req.body.oldPass;
+  const newPass = req.body.newPass;
+  const ID = req.body.ID;
+
+  const sqlUpdate =
+    "UPDATE MODEL SET Password = ? WHERE Password = ? AND ID = ?";
+
+  db.query(sqlUpdate, [newPass, oldPass, ID], (err, results) => {
+    console.log(err);
+    console.log("Password Changed");
+  });
+});
+
+app.put("/api/deleteAccount", (req, res) => {
+  const ID = req.body.ID;
+
+  const AccDelete = "DELETE FROM MODEL WHERE ID = ?";
+  const ImgDelete = "DELETE FROM IMAGE WHERE ID = ?";
+  const ItemDelete = "DELETE FROM ITEM WHERE ID = ?";
+
+  db.query(AccDelete, [ID], (err, results) => {
+    console.log(err);
+    console.log("Account Deleted");
+  });
+
+  db.query(ImgDelete, [ID], (err, results) => {
+    console.log(err);
+    console.log("Img Deleted");
+  });
+
+  db.query(ItemDelete, [ID], (err, results) => {
+    console.log(err);
+    console.log("Item Deleted");
+  });
+});
+
 app.get("/api/choose", (req, res) => {
   const email = req.query.email;
   console.log("email : " + email);
@@ -182,21 +219,22 @@ app.get("/api/choose", (req, res) => {
     }
   });
 });
-app.get("/api/checkOpen",(req,res)=>{
-const IsOpen = req.query.IsOpen
-const ID = req.query.ID
-const sqlStatement = "SELECT * from Model Where IsOpen = 1 and ID != ID"
-db.query(sqlStatement,[ID],(err,result)=>{
-  if(err){
-    console.error("Database error:", err);
-    return res.status(500).send(false); // Respond with false on error
-  }
-  if (result.length != 0) {
-    return res.send(result);
-  } else {
-    return res.send(null);
-  }
-})
+
+app.get("/api/checkOpen", (req, res) => {
+  const IsOpen = req.query.IsOpen;
+  const ID = req.query.ID;
+  const sqlStatement = "SELECT * from Model Where IsOpen = 1 and ID != ID";
+  db.query(sqlStatement, [ID], (err, result) => {
+    if (err) {
+      console.error("Database error:", err);
+      return res.status(500).send(false); // Respond with false on error
+    }
+    if (result.length != 0) {
+      return res.send(result);
+    } else {
+      return res.send(null);
+    }
+  });
 });
 
 /* app.put("/api/update",(req,res)=>{

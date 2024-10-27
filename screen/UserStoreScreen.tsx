@@ -126,6 +126,8 @@ const UserStoreScreen = ({ navigation }): React.JSX.Element => {
         fetchItem();
         console.log("Refresh List");
         setModalVisible(!modalVisible);
+        navigation.navigate("Home");
+        navigation.navigate("UserStore");
       } else if (
         modalImg ===
         Image.resolveAssetSource(require("../assets/favicon.png")).uri
@@ -147,6 +149,8 @@ const UserStoreScreen = ({ navigation }): React.JSX.Element => {
 
       console.log("deleted");
       fetchItem();
+      navigation.navigate("Home");
+      navigation.navigate("UserStore");
     } catch (error) {
       console.log(error);
     }
